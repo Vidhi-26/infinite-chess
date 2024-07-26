@@ -19,7 +19,7 @@ std::vector<Move> Knight::getPossibleMovesImpl() const {
         int nc = c + dir.second;
 
         if (board.isValidPosition(nr, nc)) {
-            if (board.isEmptyPosition(nr, nc) || board.getPieceAt(nr, nc).colour != this->colour) {
+            if (board.isEmptyPosition(nr, nc) || board.getPieceAt(nr, nc).getColour() != this->colour) {
                 possibleMoves.emplace_back(r, c, nr, nc);
             }
         }

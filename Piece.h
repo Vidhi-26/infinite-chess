@@ -8,13 +8,16 @@ class Move;
 
 class Piece {
 private:
-    Colour colour;
-    Board& board;
     virtual std::vector<Move> getPossibleMovesImpl() const = 0;
 
+protected:
+    Colour colour;
+    Board& board;
+    
 public:
     Piece(Colour, Board&);
     virtual ~Piece() = default;
+    Colour getColour() const;
     
     std::vector<Move> getPossibleMoves() const;
     std::pair<int, int> getPositionOnBoard() const;

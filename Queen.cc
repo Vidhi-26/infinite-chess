@@ -25,7 +25,7 @@ std::vector<Move> Queen::getPossibleMovesImpl() const {
                 if (board.isEmptyPosition(nr, nc)) {
                     possibleMoves.emplace_back(r, c, nr, nc);
                 } else {
-                    if (board.getPieceAt(nr, nc).colour != this->colour) {
+                    if (board.getPieceAt(nr, nc).getColour() != this->colour) {
                         possibleMoves.emplace_back(r, c, nr, nc);
                     }
                     break;

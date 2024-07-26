@@ -22,7 +22,7 @@ std::vector<Move> Bishop::getPossibleMovesImpl() const {
                 if (board.isEmptyPosition(nr, nc)) {
                     possibleMoves.emplace_back(r, c, nr, nc);
                 } else {
-                    if (board.getPieceAt(nr, nc).colour != this->colour) {  // it is possible to capture opponent piece
+                    if (board.getPieceAt(nr, nc).getColour() != this->colour) {  // it is possible to capture opponent piece
                         possibleMoves.emplace_back(r, c, nr, nc);
                     }
                     break;  // another piece blocks path
