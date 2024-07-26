@@ -12,7 +12,7 @@ private:
 public:
     Strategy();
     virtual ~Strategy() = default;
-    Move getStrategy() const;
+    Move getStrategy(const Board&, Colour) const;
 };
 
 #endif
