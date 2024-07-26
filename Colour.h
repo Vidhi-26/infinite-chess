@@ -2,8 +2,8 @@
 #define COLOUR_H
 
 enum class Colour {
-    White,
-    Black
+    WHITE,
+    BLACK
 };
 
 #endif

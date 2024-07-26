@@ -16,7 +16,6 @@ public:
     virtual ~ChessGame() = default;
     void movePiece(std::string loc1, std::string loc2);
     void acceptResignation();
-    bool setup(std::vector<std::string>);
     void setTurn(std::string);
     void addPiece(std::string piece, std::string loc);
     void removePiece(std::string loc);
