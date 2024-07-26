@@ -5,7 +5,7 @@
 class Board;
 class Move;
 
-class Knight:Piece {
+class Knight: public Piece {
 private:
     std::vector<Move> getPossibleMovesImpl() const override;
 

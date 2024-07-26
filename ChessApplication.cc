@@ -1,5 +1,6 @@
 #include <iostream>
 #include "ChessGame.h"
+#include <sstream>
 
 int main(){
     ChessGame chessGame;
@@ -9,15 +10,25 @@ int main(){
         if (command == "game" ) {
             std::string whitePlayer, blackPlayer;
             std::cin>>whitePlayer>>blackPlayer;
+            chessGame.addPlayers(whitePlayer, blackPlayer);
         }
         else if(command == "resign"){
             chessGame.acceptResignation();
         }
 
         else if(command == "move"){
+            
             std::string loc1, loc2;
-            std::cin>>loc1>>loc2;
-            chessGame.movePiece(loc1, loc2);
+           // Read the entire line after the command
+            std::getline(std::cin, loc1);
+            std::istringstream iss(loc1);
+            
+            // Extract loc1 and loc2 from the line if available
+            if (iss >> loc1 >> loc2) {
+                chessGame.movePiece(loc1, loc2);
+            } else {
+                chessGame.movePiece();
+            }
         }
 
         else if(command == "setup"){

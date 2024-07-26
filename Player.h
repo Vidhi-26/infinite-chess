@@ -16,6 +16,7 @@ public:
     virtual ~Player() = default;
     
     void playTurn();
+    void playTurn(Move);
 };
 
 #endif

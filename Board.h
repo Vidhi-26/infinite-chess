@@ -16,13 +16,14 @@ public:
     void render() const;
     char getState(int, int) const;
     void addPiece(std::unique_ptr<Piece>);
-    void removePiece(std::unique_ptr<Piece>);
+    void removePiece(std::pair<int, int>);
 
     std::pair<int, int> getPositionOfPiece(const Piece&) const;
     Piece& getPieceAt(int, int) const;
     
     bool isValidPosition(int, int) const;
-    bool isEmptyPosition(int, int) const;    
+    bool isEmptyPosition(int, int) const;
+    bool isValidConfig();    
 };
 
 #endif
