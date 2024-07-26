@@ -7,7 +7,7 @@
 
 class Board {
 private:
-    std::vector<std::unique_ptr<Piece>> pieces;
+    std::vector<std::vector<std::unique_ptr<Piece>>> pieces;
 
 public:
     void addPiece(std::unique_ptr<Piece>);
