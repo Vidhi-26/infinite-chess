@@ -3,12 +3,12 @@
 #include "Piece.h"
 
 class Queen : public Piece {
+private:
+    std::vector<Move> getPossibleMovesImpl() const override;
+
 public:
     Queen(Colour, Board&);
     virtual ~Queen() = default;
-
-private:
-    std::vector<Move> getPossibleMovesImpl() const override;
 };
 
 #endif

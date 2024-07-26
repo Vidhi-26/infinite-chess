@@ -1,9 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "Colour.h"
+#include "Move.h"
 
 class Board;
-class Move;
 
 class Player {
 private:
@@ -15,7 +15,7 @@ public:
     Player(Colour, Board&);
     virtual ~Player() = default;
     
-    void playTurn();
+    void playTurn(const Move& move = Move{-1, -1, -1, -1});
 };
 
 #endif
