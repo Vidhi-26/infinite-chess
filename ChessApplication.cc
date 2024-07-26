@@ -17,16 +17,24 @@ int main(){
         }
 
         else if(command == "move"){
+            std::string loc1, loc2, pawnPromotion;
             
-            std::string loc1, loc2;
-           // Read the entire line after the command
-            std::getline(std::cin, loc1);
-            std::istringstream iss(loc1);
+            // Read the entire line after the command
+            std::string curLine;
+            std::getline(std::cin, curLine);
+            std::istringstream iss(curLine);
             
-            // Extract loc1 and loc2 from the line if available
-            if (iss >> loc1 >> loc2) {
+            // Extract loc1, loc2, pawnPromotion from the line if available
+            if(iss>> loc1 >> loc2 >> pawnPromotion){
+                chessGame.movePiece(loc1, loc2, pawnPromotion);
+            }
+
+            // Extract loc1, loc2 from the line if available
+            else if (iss >> loc1 >> loc2) {
                 chessGame.movePiece(loc1, loc2);
-            } else {
+            } 
+            
+            else {
                 chessGame.movePiece();
             }
         }

@@ -14,9 +14,9 @@ private:
 public:
     ChessGame();
     virtual ~ChessGame() = default;
-    void movePiece(std::string loc1, std::string loc2);
-    void addPlayers(std::string player1, std::string player2);
+    void movePiece(std::string loc1, std::string loc2, std::string pawanPromotion = "");
     void movePiece();
+    void addPlayers(std::string player1, std::string player2);
     void acceptResignation();
     void setTurn(std::string);
     void addPiece(std::string piece, std::string loc);

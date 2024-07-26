@@ -8,15 +8,29 @@
 #include "Pawn.h"
 #include "Board.h"
 #include "Move.h"
+#include "HumanPlayer.h"
+#include "ComputerPlayer.h"
 
 // Constructor
-ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<ScoreBoard>()) {
-   
-}
+ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<ScoreBoard>()) {}
 
-void ChessGame::addPlayers(std::string player1, std::string player2){
-    players.push_back(std::make_unique<Player>(Colour::WHITE));
-    players.push_back(std::make_unique<Player>(Colour::BLACK));
+void ChessGame::addPlayers(std::string whitePlayer, std::string blackPlayer){
+    if(whitePlayer == "human"){
+        players.push_back(std::make_unique<HumanPlayer>(Colour::WHITE, board));
+    }
+    else if(whitePlayer.substr(0, 8) == "computer"){
+        int level = stoi(whitePlayer.substr(9,1));
+        players.push_back(std::make_unique<ComputerPlayer>(Colour::WHITE, board, level));
+    }
+
+    if(blackPlayer == "human"){
+        players.push_back(std::make_unique<HumanPlayer>(Colour::BLACK, board));
+    }
+    else if(blackPlayer.substr(0, 8) == "computer"){
+        int level = stoi(whitePlayer.substr(9,1));
+        players.push_back(std::make_unique<ComputerPlayer>(Colour::BLACK, board, level));
+    }
+   
     turn = Colour::WHITE;
 }
 
@@ -25,11 +39,13 @@ std::pair<int,int> getLocation(std::string loc){
 }
 
 // Method to move a piece from loc1 to loc2
-void ChessGame::movePiece(std::string loc1, std::string loc2) {
+void ChessGame::movePiece(std::string loc1, std::string loc2, std::string pawnPromotion) {
     auto l1 = getLocation(loc1);
     auto l2 = getLocation(loc2);
     Move newMove{l1.first, l1.second, l2.first, l2.second};
-
+    if(pawnPromotion != ""){
+        newMove.addPawnPromotion(pawnPromotion);
+    }
     if(turn == Colour::WHITE){
         players[0]->playTurn(newMove);
     }
