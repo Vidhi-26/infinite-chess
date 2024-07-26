@@ -17,6 +17,7 @@ public:
     virtual ~Piece() = default;
     
     std::vector<Move> getPossibleMoves() const;
+    std::pair<int, int> getPositionOnBoard() const;
 };
 
 #endif
