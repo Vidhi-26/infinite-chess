@@ -12,19 +12,20 @@ private:
 public:
     Board(int rowSize = 8, int colSize = 8);
     void addPiece(std::unique_ptr<Piece>);
-    void removePiece(std::unique_ptr<Piece>);
+    void removePiece(std::pair<int, int>);
+
     std::pair<int, int> getPositionOfPiece(const Piece&) const;
     Piece& getPieceAt(int, int) const;
     
     bool isValidPosition(int, int) const;
-    bool isEmptyPosition(int, int) const; 
-
+    bool isEmptyPosition(int, int) const;
+    bool isValidConfig();
     void reset();
     void render() const;
     char getState(int, int) const;
     
     bool isGameOver() const;
-    Colour getWinner() const;   
+    Colour getWinner() const;
 };
 
 #endif
