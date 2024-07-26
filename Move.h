@@ -12,7 +12,7 @@ public:
     void addPawnPromotion(std::string newPiece) {
         pawnPromotion = newPiece;
     }
-    Move(int, int, int, int);
+    Move(int = -1, int = -1, int = -1, int = -1);
 };
 
 #endif

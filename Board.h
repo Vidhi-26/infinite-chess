@@ -10,6 +10,7 @@ private:
     std::vector<std::vector<std::unique_ptr<Piece>>> pieces;
 
 public:
+    Board(int rowSize = 8, int colSize = 8);
     void addPiece(std::unique_ptr<Piece>);
     void removePiece(std::pair<int, int>);
 

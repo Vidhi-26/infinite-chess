@@ -31,7 +31,7 @@ std::vector<Move> Pawn::getPossibleMovesImpl() const {
 
         if (board.isValidPosition(nr, nc) && 
             !board.isEmptyPosition(nr, nc) && 
-            board.getPieceAt(nr, nc).colour != this->colour) {
+            board.getPieceAt(nr, nc).getColour() != this->colour) {
             possibleMoves.emplace_back(r, c, nr, nc);
         }
     }
