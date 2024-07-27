@@ -1,18 +1,25 @@
 #ifndef MOVE_H
 #define MOVE_H
 #include <utility>
-#include <string>
 
 class Move {
 private:
-    std::string pawnPromotion = "";
+    char pawnPromotion = ' ';
     
 public:
     std::pair<int, int> oldPos;
     std::pair<int, int> newPos;
 
     Move(int = -1, int = -1, int = -1, int = -1);
-    void addPawnPromotion(std::string);
+    Move(std::pair<int, int>, std::pair<int, int>);
+    
+    ~Move() = default;
+    Move(const Move&) = default;
+    Move(Move&&) = default;
+    Move& operator=(const Move&) = default;
+    Move& operator=(Move&&) = default;
+
+    void addPawnPromotion(char);
     bool operator==(const Move& move);
 };
 

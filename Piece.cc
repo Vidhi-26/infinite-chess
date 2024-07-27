@@ -16,7 +16,7 @@ std::vector<Move> Piece::getPossibleMoves(bool isTestingKingInCheck = false) {
             if (!board.isKingInCheck(colour)) {
                 validMoves.push_back(mv);
             }
-            board.simpleUndoMove(mv);
+            board.undoSimpleMove(mv);
         }
         return validMoves;   
     }
