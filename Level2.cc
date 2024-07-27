@@ -12,9 +12,12 @@ Move Level2::getStrategyImpl(const Board& board, Colour colour) const{
 
     //Iterate over all the board pieces and check which enemy to capture
     for(auto it = board.cbegin(); it != board.cend(); ++it){
-        const Piece& piece = *it;
-        if(piece.getColour() != colour) continue;
-        std::vector<Move> moves = piece.getPossibleMoves();
+        const Square& square = *it;
+        if(square.isEmpty()) continue;
+        
+        auto piece = square.piece;
+        if(piece->getColour() != colour) continue;
+        std::vector<Move> moves = piece->getPossibleMoves();
 
         //Iterate through each possible move of the current piece
         for(auto& move: moves){
