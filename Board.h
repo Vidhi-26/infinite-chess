@@ -25,6 +25,7 @@ public:
     void addPiece(std::unique_ptr<Piece>, std::pair<int,int>);
     void removePiece(std::pair<int, int>);
     void movePiece(const Move&);
+    void undoSimpleMove(const Move&);
 
     // Getters for board pieces
     std::pair<int, int> getPositionOfPiece(const Piece&) const;

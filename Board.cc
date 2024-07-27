@@ -211,6 +211,10 @@ void Board::movePiece(const Move& move) {
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
 }
 
+void Board::undoSimpleMove(const Move& mv) {
+    movePiece(std::move(Move{mv.newPos, mv.oldPos}));
+}
+
 void Board::render() {
     this->notifyObservers();
 }

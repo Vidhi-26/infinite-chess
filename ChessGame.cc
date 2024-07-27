@@ -44,6 +44,7 @@ void ChessGame::postMoveAction(){
     board->updateGameState(turn);
     GameState curState = board->getGameState();
     // TODO: Make a switch statement, and return Color from GameState to scoreboard
+    // Use ColorUtils!
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
         scoreboard->updateScores(curState);
         board->reset();
@@ -60,12 +61,13 @@ void ChessGame::postMoveAction(){
 }
 
 // Method to move a piece from loc1 to loc2
+// TODO: Make pawnPromotion char
 void ChessGame::movePiece(std::string loc1, std::string loc2, std::string pawnPromotion) {
     auto l1 = getLocation(loc1);
     auto l2 = getLocation(loc2);
     Move newMove{l1.first, l1.second, l2.first, l2.second};
     if(pawnPromotion != ""){
-        newMove.addPawnPromotion(pawnPromotion);
+        newMove.addPawnPromotion(pawnPromotion[0]);
     }
     if(turn == Colour::WHITE){
         players[0]->playTurn(newMove);
