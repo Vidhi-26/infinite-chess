@@ -5,6 +5,8 @@
 #include "Move.h"
 #include <unordered_map>
 
+Level2::Level2() {}
+
 Move Level2::getStrategyImpl(const Board& board, Colour colour) const{
     //Keep track of the best move (categorized by most points acquired by capturing)
     Move bestMove{}; 

@@ -20,7 +20,7 @@ public:
     virtual ~Piece() = default;
     Colour getColour() const;
     
-    std::vector<Move> getPossibleMoves();
+    std::vector<Move> getPossibleMoves(bool isTestingKingInCheck = false);
     int getPoints() const;
 };
 

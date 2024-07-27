@@ -10,6 +10,7 @@
 #include "Move.h"
 #include "HumanPlayer.h"
 #include "ComputerPlayer.h"
+#include "SimpleScoreBoard.h"
 
 // Constructor
 ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()) {}
@@ -42,6 +43,7 @@ void ChessGame::postMoveAction(){
     turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
     board->updateGameState(turn);
     GameState curState = board->getGameState();
+    // TODO: Make a switch statement, and return Color from GameState to scoreboard
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
         scoreboard->updateScores(curState);
         board->reset();

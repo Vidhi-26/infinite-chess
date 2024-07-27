@@ -10,34 +10,45 @@
 class Board {
 private:
     std::vector<std::vector<std::unique_ptr<Square>>> grid;
+    std::vector<std::unique_ptr<Piece>> currentPieces;
+    GameState gameState; 
+
+    // Helper methods to detect checkmate and stalemate situations
     bool isCheckMate(Colour) const;
     bool isStaleMate(Colour) const;
-    bool isKingInCheck(Colour) const;
     std::pair<int,int> kingLocation(Colour colour) const;
-    std::vector<std::unique_ptr<Piece>> currentPieces; 
-    GameState gameState;
 
 public:
+    // Board ctor and methods to add, remove, move pieces on board
     Board(int rowSize = 8, int colSize = 8);
     void addPiece(std::unique_ptr<Piece>, std::pair<int,int>);
     void removePiece(std::pair<int, int>);
     void movePiece(const Move&);
 
+    // Getters for board pieces
     std::pair<int, int> getPositionOfPiece(const Piece&) const;
     Piece& getPieceAt(int, int) const;
-    
+
+    // Setter and getter for game state
     GameState getGameState() const;
     void updateGameState(Colour);
+
+    // Checks if a square is at a valid position and configuration of all pieces is valid
     bool isValidPosition(int, int) const;
     bool isEmptyPosition(int, int) const;
     bool isValidConfig();
+
+    // Helps in displaying board
     void reset();
     void render() const;
     char getState(int, int) const;
     
+    // Methods to check when game might be over
+    bool isKingInCheck(Colour) const;
     bool isGameOver(Colour);
     Colour getWinner() const;
     
+    // Iterates grid
     template<typename T> class MyIterator{
         int row, col;
         std::vector<std::vector<std::unique_ptr<Square>>>& grid;
