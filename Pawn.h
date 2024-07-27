@@ -7,7 +7,7 @@ private:
     std::vector<Move> getPossibleMovesImpl() const override;
 
 public:
-    Pawn(Colour, Board&);
+    Pawn(Colour, Board&, int points = 1);
     virtual ~Pawn() = default;
 };
 

@@ -2,7 +2,7 @@
 #include "Board.h"
 #include "Move.h"
 
-Queen::Queen(Colour colour, Board& board) : Piece{colour, board} {}
+Queen::Queen(Colour colour, Board& board, int points) : Piece{colour, board, points} {}
 
 std::vector<Move> Queen::getPossibleMovesImpl() const {
     std::vector<Move> possibleMoves;

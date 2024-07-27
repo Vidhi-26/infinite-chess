@@ -7,7 +7,7 @@ private:
     std::vector<Move> getPossibleMovesImpl() const override;
 
 public:
-    Knight(Colour, Board&);
+    Knight(Colour, Board&, int points = 3);
     virtual ~Knight() = default;
 };
 

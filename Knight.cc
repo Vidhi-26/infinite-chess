@@ -2,7 +2,7 @@
 #include "Board.h"
 #include "Move.h"
 
-Knight::Knight(Colour colour, Board& board) : Piece{colour, board} {}
+Knight::Knight(Colour colour, Board& board, int points) : Piece{colour, board, points} {}
 
 std::vector<Move> Knight::getPossibleMovesImpl() const {
     std::vector<Move> possibleMoves;

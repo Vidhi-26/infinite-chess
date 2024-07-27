@@ -2,7 +2,7 @@
 #include "Board.h"
 #include "Move.h"
 
-Pawn::Pawn(Colour colour, Board& board) : Piece{colour, board} {}
+Pawn::Pawn(Colour colour, Board& board, int points) : Piece{colour, board, points} {}
 
 std::vector<Move> Pawn::getPossibleMovesImpl() const {
     std::vector<Move> possibleMoves;

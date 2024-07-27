@@ -7,7 +7,7 @@ private:
     std::vector<Move> getPossibleMovesImpl() const override;
 
 public:
-    Rook(Colour, Board&);
+    Rook(Colour, Board&, int points = 5);
     virtual ~Rook() = default;
 };
 

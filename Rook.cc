@@ -2,7 +2,7 @@
 #include "Board.h"
 #include "Move.h"
 
-Rook::Rook(Colour colour, Board& board) : Piece{colour, board} {}
+Rook::Rook(Colour colour, Board& board, int points) : Piece{colour, board, points} {}
 
 std::vector<Move> Rook::getPossibleMovesImpl() const {
     std::vector<Move> possibleMoves;

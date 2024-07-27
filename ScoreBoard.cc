@@ -5,7 +5,17 @@
 ScoreBoard::ScoreBoard() {}
 
 void ScoreBoard::updateScores(Colour colour) {
+    // Handle draw
+    if (colour == Colour::DRAW) {
+        for (auto& score : scores) {
+            updateScoresImpl(score.first);
+        }
+    }
+    
+    // Customizable update scores
     updateScoresImpl(colour);
+
+    // Display scores flexible for observers
     displayScores();
 }
 

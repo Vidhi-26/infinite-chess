@@ -12,16 +12,15 @@ private:
 
 protected:
     Colour colour;
-    const Board& board;
+    Board& board;
     int points;
 
 public:
-    Piece(Colour, const Board&, int points);
+    Piece(Colour, Board&, int points);
     virtual ~Piece() = default;
     Colour getColour() const;
     
-    std::vector<Move> getPossibleMoves() const;
-    std::pair<int, int> getPositionOnBoard() const;
+    std::vector<Move> getPossibleMoves();
     int getPoints() const;
 };
 

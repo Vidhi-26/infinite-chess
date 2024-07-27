@@ -7,7 +7,7 @@ private:
     std::vector<Move> getPossibleMovesImpl() const override;
     
 public:
-    Bishop(Colour, Board&);
+    Bishop(Colour, Board&, int points = 3);
     virtual ~Bishop() = default;
 };
 
