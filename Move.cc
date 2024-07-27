@@ -7,6 +7,6 @@ void Move::addPawnPromotion(char newPiece) {
     pawnPromotion = newPiece;
 }
 
-bool Move::operator==(const Move& other) {
-    return oldPos == other.oldPos && newPos == other.newPos;
+bool Move::operator==(const Move& other) const {
+    return oldPos == other.oldPos && newPos == other.newPos && pawnPromotion == other.pawnPromotion;
 }

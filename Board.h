@@ -47,13 +47,11 @@ public:
     
     // Methods to check when game might be over
     bool isKingInCheck(Colour) const;
-    bool isGameOver(Colour);
-    Colour getWinner() const;
     
     // Iterates grid
     template<typename T> class MyIterator{
         int row, col;
-        std::vector<std::vector<std::unique_ptr<Square>>>& grid;
+        const std::vector<std::vector<std::unique_ptr<Square>>>& grid;
         MyIterator<T>(int r, int c, const std::vector<std::vector<std::unique_ptr<Square>>>& grid): row{r}, col{c}, grid{grid}{}
     public:
         bool operator!= (const MyIterator<T>& other){

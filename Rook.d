@@ -1,0 +1,2 @@
+Rook.o: Rook.cc Rook.h Piece.h Colour.h Board.h Square.h GameState.h \
+ Subject.h Move.h

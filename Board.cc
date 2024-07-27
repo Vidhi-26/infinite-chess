@@ -5,8 +5,17 @@
 #include "GameState.h"
 #include <stdexcept>
 #include <unordered_map>
+#include <iostream>
+#include <cctype>
 
-Board::Board(int rowSize, int colSize) : grid(rowSize, std::vector<std::unique_ptr<Square>>(colSize)){}
+Board::Board(int rowSize, int colSize) : grid(rowSize) {
+    for (auto& row : grid) {
+        row.reserve(colSize);
+        for (int i = 0; i < colSize; ++i) {
+            row.push_back(std::make_unique<Square>());
+        }
+    }
+}
 
 std::pair<int, int> Board::getPositionOfPiece(const Piece& piece) const {
     for (size_t r = 0; r < grid.size(); r++) {
@@ -41,11 +50,11 @@ bool Board::isValidConfig(){
     if(isKingInCheck(Colour::BLACK) || isKingInCheck(Colour::WHITE)) return false;
     
     for(int i = 0; i < grid[0].size(); i++){
-        if(dynamic_cast<Pawn*>(grid[0][i]->piece)) return false;
+        if(!grid[0][i]->isEmpty() && dynamic_cast<Pawn*>(grid[0][i]->piece)) return false;
     }
 
     for(int i = 0; i < grid[grid.size() - 1].size(); i++){
-        if(dynamic_cast<Pawn*>(grid[grid.size() - 1][i]->piece)) return false;
+        if(!grid[0][i]->isEmpty() && dynamic_cast<Pawn*>(grid[grid.size() - 1][i]->piece)) return false;
     }
     return true;
 }
@@ -129,9 +138,6 @@ bool Board::isCheckMate(Colour colour) const{
     return true;
 }
 
-bool Board::isGameOver(Colour turn) {
-   
-}
 
 //Returns king location on the board given the colour. 
 //Special cases: If king does not exist, or exists multiple times, returns {-1,-1}
@@ -161,9 +167,9 @@ bool Board::isKingInCheck(Colour colour) const{
 
     //Iterate through the chess board
     for(int i = 0; i < grid.size(); i++){
-        for(int j = 0; j < grid[i].size(); i++){
+        for(int j = 0; j < grid[i].size(); j++){
             if(!grid[i][j]->isEmpty() && grid[i][j]->piece->getColour() != colour){
-                auto moves = grid[i][j]->piece->getPossibleMoves();
+                auto moves = grid[i][j]->piece->getPossibleMoves(true);
                 for(auto& move: moves){
                     if(move.newPos.first == kingLoc.first && move.newPos.second == kingLoc.second) return true;
                 }
@@ -220,6 +226,12 @@ void Board::render() {
 }
 
 char Board::getState(int row, int col) const{
+    if(grid[row][col]->isEmpty()){
+        if(row % 2 == 0 && col % 2 == 0) return '_';
+        else if(row % 2 != 0 && col % 2 != 0) return '_';
+        else return ' ';
+    } 
+    
     char code = grid[row][col]->piece->getCode();
     if(grid[row][col]->piece->getColour() == Colour::WHITE){
         return code - 32;

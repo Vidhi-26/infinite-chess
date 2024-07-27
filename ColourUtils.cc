@@ -8,3 +8,12 @@ std::string ColourUtils::toString(Colour colour) {
         default: return "Unknown Colour";
     }
 }
+
+Colour ColourUtils::getWinner(GameState gs) {
+    switch (gs) {
+        case GameState::WHITE_WINS: return Colour::WHITE;
+        case GameState::BLACK_WINS: return Colour::BLACK;
+        // Add other colour cases later if needed
+        default: return Colour::DRAW;
+    }
+}

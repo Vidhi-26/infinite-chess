@@ -1,6 +1,7 @@
 #ifndef MOVE_H
 #define MOVE_H
 #include <utility>
+#include <functional>
 
 class Move {
 private:
@@ -12,15 +13,10 @@ public:
 
     Move(int = -1, int = -1, int = -1, int = -1);
     Move(std::pair<int, int>, std::pair<int, int>);
-    
     ~Move() = default;
-    Move(const Move&) = default;
-    Move(Move&&) = default;
-    Move& operator=(const Move&) = default;
-    Move& operator=(Move&&) = default;
 
     void addPawnPromotion(char);
-    bool operator==(const Move& move);
+    bool operator==(const Move& move) const;
 };
 
 #endif

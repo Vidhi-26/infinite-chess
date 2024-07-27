@@ -7,9 +7,9 @@ class TextObserver: public Observer{
 private:
     Board* board; //Non-owning ptr
     std::ostream &out = std::cout; //ostream object to print to console
-    int top, bottom, left, right;
+    int width, height;
 public:
-    TextObserver(int, int, int, int, Board*);
+    TextObserver(Board*, int width = 8, int height = 8);
     void notify() override;
     ~TextObserver();
 };

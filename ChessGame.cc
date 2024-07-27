@@ -11,27 +11,48 @@
 #include "HumanPlayer.h"
 #include "ComputerPlayer.h"
 #include "SimpleScoreBoard.h"
+#include "ColourUtils.h"
+#include "Strategy.h"
+#include "Level1.h"
+#include "Level2.h"
 
 // Constructor
-ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()) {}
+ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()){
+    textObserver = std::move(std::make_unique<TextObserver>(board.get())); 
+}
 
+std::unique_ptr<Strategy> ChessGame::createStrategy(int level){
+        if(level == 1){
+            return std::make_unique<Level1>();
+        }
+        else{
+            return std::make_unique<Level2>();
+        }
+}
 void ChessGame::addPlayers(std::string whitePlayer, std::string blackPlayer){
     if(whitePlayer == "human"){
-        players.push_back(std::make_unique<HumanPlayer>(Colour::WHITE, board));
+        auto newPlayer = std::make_unique<HumanPlayer>(Colour::WHITE, *board);
+        players.push_back(std::move(newPlayer));
     }
     else if(whitePlayer.substr(0, 8) == "computer"){
         int level = stoi(whitePlayer.substr(9,1));
-        players.push_back(std::make_unique<ComputerPlayer>(Colour::WHITE, board, level));
+        auto strategy = createStrategy(level);
+        strategies.push_back(std::move(strategy));
+        auto newPlayer = std::make_unique<ComputerPlayer>(Colour::WHITE, *board, *strategy);
+        players.push_back(std::move(newPlayer));
     }
 
     if(blackPlayer == "human"){
-        players.push_back(std::make_unique<HumanPlayer>(Colour::BLACK, board));
+        auto newPlayer = std::make_unique<HumanPlayer>(Colour::BLACK, *board);
+        players.push_back(std::move(newPlayer));
     }
     else if(blackPlayer.substr(0, 8) == "computer"){
         int level = stoi(whitePlayer.substr(9,1));
-        players.push_back(std::make_unique<ComputerPlayer>(Colour::BLACK, board, level));
+        auto strategy = createStrategy(level);
+        strategies.push_back(std::move(strategy));
+        auto newPlayer = std::make_unique<ComputerPlayer>(Colour::BLACK, *board, *strategy);
+        players.push_back(std::move(newPlayer));
     }
-   
     turn = Colour::WHITE;
 }
 
@@ -46,7 +67,7 @@ void ChessGame::postMoveAction(){
     // TODO: Make a switch statement, and return Color from GameState to scoreboard
     // Use ColorUtils!
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
-        scoreboard->updateScores(curState);
+        scoreboard->updateScores(ColourUtils::getWinner(curState));
         board->reset();
     }
     else if(curState == GameState::BLACK_IN_CHECK){
@@ -62,12 +83,17 @@ void ChessGame::postMoveAction(){
 
 // Method to move a piece from loc1 to loc2
 // TODO: Make pawnPromotion char
-void ChessGame::movePiece(std::string loc1, std::string loc2, std::string pawnPromotion) {
+void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion) {
     auto l1 = getLocation(loc1);
     auto l2 = getLocation(loc2);
+    
     Move newMove{l1.first, l1.second, l2.first, l2.second};
-    if(pawnPromotion != ""){
-        newMove.addPawnPromotion(pawnPromotion[0]);
+    if (board->isEmptyPosition(newMove.oldPos.first, newMove.oldPos.second)){
+        std::cout<<"No piece exists there"<<std::endl;
+        return;
+    }
+    if(pawnPromotion != ' '){
+        newMove.addPawnPromotion(pawnPromotion);
     }
     if(turn == Colour::WHITE){
         players[0]->playTurn(newMove);
@@ -98,40 +124,40 @@ void ChessGame::setTurn(std::string colour) {
 void ChessGame::addPiece(std::string key, std::string loc) {
     std::unique_ptr<Piece> piece;
     if(key == "R"){
-        piece = std::make_unique<Rook>(Colour::WHITE, board);
+        piece = std::make_unique<Rook>(Colour::WHITE, *board);
     }
     else if(key == "N"){
-        piece = std::make_unique<Knight>(Colour::WHITE, board);
+        piece = std::make_unique<Knight>(Colour::WHITE, *board);
     }
     else if(key == "B"){
-        piece = std::make_unique<Bishop>(Colour::WHITE, board);
+        piece = std::make_unique<Bishop>(Colour::WHITE, *board);
     }
     else if(key == "Q"){
-       piece = std::make_unique<Queen>(Colour::WHITE, board);
+       piece = std::make_unique<Queen>(Colour::WHITE, *board);
     }
     else if(key == "K"){
-        piece = std::make_unique<King>(Colour::WHITE, board);
+        piece = std::make_unique<King>(Colour::WHITE,*board);
     }
     else if(key == "P"){
-        piece = std::make_unique<Pawn>(Colour::WHITE, board);
+        piece = std::make_unique<Pawn>(Colour::WHITE, *board);
     }
     else if(key == "r"){
-        piece = std::make_unique<Rook>(Colour::BLACK, board);
+        piece = std::make_unique<Rook>(Colour::BLACK, *board);
     }
     else if(key == "n"){
-        piece = std::make_unique<Knight>(Colour::BLACK, board);
+        piece = std::make_unique<Knight>(Colour::BLACK, *board);
     }
     else if(key == "b"){
-        piece = std::make_unique<Bishop>(Colour::BLACK, board);
+        piece = std::make_unique<Bishop>(Colour::BLACK, *board);
     }
     else if(key == "q"){
-        piece = std::make_unique<Queen>(Colour::BLACK, board);
+        piece = std::make_unique<Queen>(Colour::BLACK, *board);
     }
     else if(key == "k"){
-        piece = std::make_unique<King>(Colour::BLACK, board);
+        piece = std::make_unique<King>(Colour::BLACK, *board);
     }
     else if(key == "p"){
-        piece = std::make_unique<Pawn>(Colour::BLACK, board);
+        piece = std::make_unique<Pawn>(Colour::BLACK, *board);
     }
     (*board).addPiece(std::move(piece), getLocation(loc));
 }
@@ -143,6 +169,7 @@ void ChessGame::removePiece(std::string loc) {
 
 // Method to check if the board configuration is valid
 bool ChessGame::isBoardConfigValid() {
+    std::cout << "hi\n";
     return board->isValidConfig();
 }
 

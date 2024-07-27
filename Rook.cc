@@ -37,3 +37,7 @@ std::vector<Move> Rook::getPossibleMovesImpl() const {
 
     return possibleMoves;
 }
+
+char Rook::getCodeImpl() const{
+    return 'r';
+}

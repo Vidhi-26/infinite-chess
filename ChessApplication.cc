@@ -17,24 +17,39 @@ int main(){
         }
 
         else if(command == "move"){
-            std::string loc1, loc2, pawnPromotion;
-            
+            std::string loc1, loc2;
+            char pawnPromotion;
             // Read the entire line after the command
             std::string curLine;
             std::getline(std::cin, curLine);
             std::istringstream iss(curLine);
             
+            std::vector<std::string> tokens;
+            std::string token;
+            while (std::getline(iss, token, ' ')) {
+                tokens.push_back(token);
+            }
+
             // Extract loc1, loc2, pawnPromotion from the line if available
-            if(iss>> loc1 >> loc2 >> pawnPromotion){
+            std::cout << curLine << "\n";
+
+            if(tokens.size() == 4){
+                loc1 = tokens[1];
+                loc2 = tokens[2];
+                pawnPromotion = tokens[3][0];
                 chessGame.movePiece(loc1, loc2, pawnPromotion);
             }
 
             // Extract loc1, loc2 from the line if available
-            else if (iss >> loc1 >> loc2) {
+            else if (tokens.size() == 3) {
+                loc1 = tokens[1];
+                loc2 = tokens[2];
+                std::cout<<"moving piece from "<<loc1<<" to "<<loc2<<std::endl;
                 chessGame.movePiece(loc1, loc2);
             } 
             
-            else {
+            else if (tokens.size() == 0){
+                std::cout<<"moving piece"<<std::endl;
                 chessGame.movePiece();
             }
         }
@@ -45,6 +60,7 @@ int main(){
                 if(setupCmd == "+"){
                     std::string piece, loc;
                     std::cin>>piece>>loc;
+                    std::cout << "added piece\n";
                     chessGame.addPiece(piece,loc);
                 }
                 else if(setupCmd == "-"){

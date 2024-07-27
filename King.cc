@@ -1,10 +1,12 @@
 #include "King.h"
 #include "Board.h"
 #include "Move.h"
+#include <iostream>
 
 King::King(Colour colour, Board& board, int points) : Piece{colour, board, points} {}
 
 std::vector<Move> King::getPossibleMovesImpl() const {
+
     std::vector<Move> possibleMoves;
     std::vector<std::pair<int, int>> dirs = {
         {1, 0}, {0, 1}, {-1, 0}, {0, -1}, // horizontal and vertical directions
@@ -24,7 +26,6 @@ std::vector<Move> King::getPossibleMovesImpl() const {
             }
         }
     }
-
     return possibleMoves;
 }
 

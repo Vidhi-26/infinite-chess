@@ -1,11 +1,13 @@
 #include "Piece.h"
 #include "Board.h"
+#include "Move.h"
+#include <iostream>
 
 // Piece ctor
 Piece::Piece(Colour colour, Board& board, int points) : colour{colour}, board{board}, points{points} {}
 
 // Get possible moves for a piece
-std::vector<Move> Piece::getPossibleMoves(bool isTestingKingInCheck = false) {
+std::vector<Move> Piece::getPossibleMoves(bool isTestingKingInCheck) {
     // Get customized moves depending on Piece type
     std::vector<Move> allMoves = getPossibleMovesImpl();
 
