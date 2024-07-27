@@ -38,3 +38,7 @@ std::vector<Move> Queen::getPossibleMovesImpl() const {
 
     return possibleMoves;
 }    
+
+char Queen::getCodeImpl() const{
+    return 'q';
+}

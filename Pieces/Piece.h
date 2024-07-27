@@ -9,7 +9,7 @@ class Move;
 class Piece {
 private:
     virtual std::vector<Move> getPossibleMovesImpl() const = 0;
-
+    virtual char getCodeImpl() const = 0;
 protected:
     Colour colour;
     Board& board;
@@ -19,7 +19,7 @@ public:
     Piece(Colour, Board&, int points);
     virtual ~Piece() = default;
     Colour getColour() const;
-    
+    char getCode() const;
     std::vector<Move> getPossibleMoves(bool isTestingKingInCheck = false);
     int getPoints() const;
 };

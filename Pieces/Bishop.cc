@@ -41,3 +41,7 @@ std::vector<Move> Bishop::getPossibleMovesImpl() const {
 
     return possibleMoves;
 }
+
+char Bishop::getCodeImpl() const{
+    return 'b';
+}

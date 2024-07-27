@@ -5,7 +5,7 @@
 class Bishop : public Piece {
 private:
     std::vector<Move> getPossibleMovesImpl() const override;
-    
+    char getCodeImpl() const override;
 public:
     Bishop(Colour, Board&, int points = 3);
     virtual ~Bishop() = default;

@@ -38,3 +38,7 @@ std::vector<Move> Pawn::getPossibleMovesImpl() const {
 
     return possibleMoves;
 }
+
+char Pawn::getCodeImpl() const{
+    return 'p';
+}

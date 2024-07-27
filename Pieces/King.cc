@@ -27,3 +27,7 @@ std::vector<Move> King::getPossibleMovesImpl() const {
 
     return possibleMoves;
 }
+
+char King::getCodeImpl() const{
+    return 'k';
+}

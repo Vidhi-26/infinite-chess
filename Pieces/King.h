@@ -6,7 +6,7 @@
 class King : public Piece {
 private:
     std::vector<Move> getPossibleMovesImpl() const override;
-
+    char getCodeImpl() const override;
 public:
     King(Colour, Board&, int points = INT_MAX);
     virtual ~King() = default;

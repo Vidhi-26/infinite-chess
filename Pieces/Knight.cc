@@ -27,3 +27,7 @@ std::vector<Move> Knight::getPossibleMovesImpl() const {
 
     return possibleMoves;
 }
+
+char Knight::getCodeImpl() const{
+    return 'n';
+}

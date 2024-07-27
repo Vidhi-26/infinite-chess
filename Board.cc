@@ -210,3 +210,15 @@ void Board::movePiece(const Move& move) {
     grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
 }
+
+void Board::render() {
+    this->notifyObservers();
+}
+
+char Board::getState(int row, int col) const{
+    char code = grid[row][col]->piece->getCode();
+    if(grid[row][col]->piece->getColour() == Colour::WHITE){
+        return code - 32;
+    }
+    return code;
+}

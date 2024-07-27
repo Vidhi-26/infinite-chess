@@ -5,7 +5,7 @@
 class Queen : public Piece {
 private:
     std::vector<Move> getPossibleMovesImpl() const override;
-
+    char getCodeImpl() const override;
 public:
     Queen(Colour, Board&, int points = 9);
     virtual ~Queen() = default;

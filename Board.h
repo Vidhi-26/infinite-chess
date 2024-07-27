@@ -6,8 +6,9 @@
 #include "Piece.h"
 #include "Square.h"
 #include "GameState.h"
+#include "Subject.h"
 
-class Board {
+class Board: public Subject {
 private:
     std::vector<std::vector<std::unique_ptr<Square>>> grid;
     std::vector<std::unique_ptr<Piece>> currentPieces;
@@ -40,7 +41,7 @@ public:
 
     // Helps in displaying board
     void reset();
-    void render() const;
+    void render();
     char getState(int, int) const;
     
     // Methods to check when game might be over

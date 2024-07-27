@@ -32,3 +32,7 @@ Colour Piece::getColour() const {
 int Piece::getPoints() const {
     return points;
 }
+
+char Piece::getCode() const{
+    return getCodeImpl();
+}

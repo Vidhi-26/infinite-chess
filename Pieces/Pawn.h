@@ -5,7 +5,7 @@
 class Pawn : public Piece {
 private:
     std::vector<Move> getPossibleMovesImpl() const override;
-
+    char getCodeImpl() const override;
 public:
     Pawn(Colour, Board&, int points = 1);
     virtual ~Pawn() = default;
