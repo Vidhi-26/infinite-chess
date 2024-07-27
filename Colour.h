@@ -3,7 +3,8 @@
 
 enum class Colour {
     WHITE,
-    BLACK
+    BLACK,
+    DRAW
 };
 
 #endif
