@@ -12,18 +12,17 @@ private:
 
 protected:
     Colour colour;
-    Board& board;
-    virtual std::vector<Move> getPossibleMovesImpl() const = 0;
+    const Board& board;
     int points;
+
 public:
-    Piece(Colour, Board&, int points);
+    Piece(Colour, const Board&, int points);
     virtual ~Piece() = default;
     Colour getColour() const;
     
     std::vector<Move> getPossibleMoves() const;
     std::pair<int, int> getPositionOnBoard() const;
     int getPoints() const;
-    
 };
 
 #endif

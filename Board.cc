@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "Move.h"
 
 Board::Board(int rowSize, int colSize) : pieces(rowSize, std::vector<std::unique_ptr<Piece>>(colSize)){}
 
@@ -23,4 +24,9 @@ bool Board::isValidPosition(int r, int c) const {
 
 bool Board::isEmptyPosition(int r, int c) const {
     return nullptr == pieces[r][c].get();
+}
+
+void Board::movePiece(const Move& move) {
+    grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
+    grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
 }

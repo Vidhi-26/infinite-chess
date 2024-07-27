@@ -1,6 +1,6 @@
 #include "Piece.h"
 
-Piece::Piece(Colour colour, Board& board) : colour{colour}, board{board} {}
+Piece::Piece(Colour colour, const Board& board, int points) : colour{colour}, board{board}, points{points} {}
 
 std::vector<Move> Piece::getPossibleMoves() const {
     return getPossibleMovesImpl();

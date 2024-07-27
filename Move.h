@@ -6,13 +6,14 @@
 class Move {
 private:
     std::string pawnPromotion = "";
+    
 public:
     std::pair<int, int> oldPos;
     std::pair<int, int> newPos;
-    void addPawnPromotion(std::string newPiece) {
-        pawnPromotion = newPiece;
-    }
+
     Move(int = -1, int = -1, int = -1, int = -1);
+    void addPawnPromotion(std::string);
+    bool operator==(const Move& move);
 };
 
 #endif

@@ -13,6 +13,7 @@ public:
     Board(int rowSize = 8, int colSize = 8);
     void addPiece(std::unique_ptr<Piece>);
     void removePiece(std::pair<int, int>);
+    void movePiece(const Move&);
 
     std::pair<int, int> getPositionOfPiece(const Piece&) const;
     Piece& getPieceAt(int, int) const;
@@ -32,10 +33,12 @@ public:
         int row, col;
         std::vector<std::vector<std::unique_ptr<Piece>>>& pieces;
         MyIterator<T>(int r, int c, const std::vector<std::vector<std::unique_ptr<Piece>>>& pieces): row{r}, col{c}, pieces{pieces}{}
+    
     public:
         bool operator!= (const MyIterator<T>& other){
             return other.row != row || other.col != col;
         }
+
         MyIterator<T>& operator++(){
             col++;
             if(col == pieces[row].size()){
@@ -44,6 +47,7 @@ public:
             }
             return *this;
         }
+
         T operator*(){
             return *pieces[row][col];
         }
@@ -59,7 +63,6 @@ public:
 
     ConstIterator cbegin() const{ return MyIterator<const Piece&>{0,0, pieces}; }
     ConstIterator cend() const {return MyIterator<const Piece&>{pieces.size(), 0, pieces};}
-    
 };
 
 #endif
