@@ -11,6 +11,7 @@ private:
     std::vector<std::unique_ptr<Player>> players;
     std::unique_ptr<ScoreBoard> scoreboard;
     Colour turn;
+    void postMoveAction();
 public:
     ChessGame();
     virtual ~ChessGame() = default;

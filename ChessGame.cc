@@ -12,7 +12,7 @@
 #include "ComputerPlayer.h"
 
 // Constructor
-ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<ScoreBoard>()) {}
+ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()) {}
 
 void ChessGame::addPlayers(std::string whitePlayer, std::string blackPlayer){
     if(whitePlayer == "human"){
@@ -38,6 +38,25 @@ std::pair<int,int> getLocation(std::string loc){
     return {loc[1] - '1', loc[0] - 'a'};
 }
 
+void ChessGame::postMoveAction(){
+    turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
+    board->updateGameState(turn);
+    GameState curState = board->getGameState();
+    if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
+        scoreboard->updateScores(curState);
+        board->reset();
+    }
+    else if(curState == GameState::BLACK_IN_CHECK){
+        //Display to screen
+    }
+    else if(curState == GameState::WHITE_IN_CHECK){
+        //Display to screen
+    }
+    else{
+        board->render();
+    }
+}
+
 // Method to move a piece from loc1 to loc2
 void ChessGame::movePiece(std::string loc1, std::string loc2, std::string pawnPromotion) {
     auto l1 = getLocation(loc1);
@@ -50,8 +69,7 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, std::string pawnPr
         players[0]->playTurn(newMove);
     }
     else players[1]->playTurn(newMove);
-    
-    turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
+    postMoveAction();
 }
 
 void ChessGame::movePiece(){
@@ -59,8 +77,7 @@ void ChessGame::movePiece(){
         players[0]->playTurn();
     }
     else players[1]->playTurn();
-    
-    turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
+    postMoveAction();
 }
 
 // Method to accept resignation
@@ -112,7 +129,7 @@ void ChessGame::addPiece(std::string key, std::string loc) {
     else if(key == "p"){
         piece = std::make_unique<Pawn>(Colour::BLACK, board);
     }
-    (*board).addPiece(std::move(piece));
+    (*board).addPiece(std::move(piece), getLocation(loc));
 }
 
 // Method to remove a piece from the board
