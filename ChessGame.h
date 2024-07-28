@@ -17,6 +17,7 @@ private:
     std::vector<std::unique_ptr<Strategy>> strategies;
     std::unique_ptr<Strategy> createStrategy(int level);
     void postMoveAction();
+    void createPlayer(std::string, Colour);
 public:
     ChessGame();
     virtual ~ChessGame() = default;

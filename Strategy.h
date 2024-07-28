@@ -7,11 +7,11 @@ class Board;
 
 class Strategy {
 private:
-    virtual Move getStrategyImpl(const Board&, Colour) const = 0;
+    virtual Move getStrategyImpl(Board&, Colour) = 0;
 public:
     Strategy();
     virtual ~Strategy() = default;
-    Move getStrategy(const Board&, Colour) const;
+    Move getStrategy(Board&, Colour) ;
 };
 
 #endif

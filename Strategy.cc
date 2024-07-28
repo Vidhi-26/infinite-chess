@@ -3,6 +3,6 @@
 
 Strategy::Strategy() {}
 
-Move Strategy::getStrategy(const Board& board, Colour colour) const {
+Move Strategy::getStrategy(Board& board, Colour colour)  {
     return getStrategyImpl(board, colour);
 }
