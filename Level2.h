@@ -4,7 +4,7 @@
 class Move;
 
 class Level2: public Level1 {
-private:
+protected:
     Move getStrategyImpl(Board&, Colour) override;
 
 public:
