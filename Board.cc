@@ -48,11 +48,11 @@ bool Board::isValidConfig() {
     if(whiteKingLoc.first == -1 || whiteKingLoc.second == -1 || blackKingLoc.first == -1 || whiteKingLoc.first == -1) return false;
     if(isKingInCheck(Colour::BLACK) || isKingInCheck(Colour::WHITE)) return false;
     
-    for(int i = 0; i < grid[0].size(); i++){
+    for(size_t i = 0; i < grid[0].size(); i++){
         if(!grid[0][i]->isEmpty() && dynamic_cast<Pawn*>(grid[0][i]->piece)) return false;
     }
 
-    for(int i = 0; i < grid[grid.size() - 1].size(); i++){
+    for(size_t i = 0; i < grid[grid.size() - 1].size(); i++){
         if(!grid[0][i]->isEmpty() && dynamic_cast<Pawn*>(grid[grid.size() - 1][i]->piece)) return false;
     }
     return true;
@@ -76,8 +76,8 @@ void Board::removePiece(std::pair<int, int> loc){
 }
 
 void Board::reset(){
-    for(int i = 0; i < grid.size(); i++){
-        for(int j = 0; j < grid[i].size(); j++){
+    for(size_t i = 0; i < grid.size(); i++){
+        for(size_t j = 0; j < grid[i].size(); j++){
             removePiece({i,j});
         }
     }
@@ -112,7 +112,7 @@ bool Board::isCheckMate(Colour colour) const{
     std::unordered_map<std::pair<int,int>, bool, pair_hash> moveNotPossible;
     
     //Start by assuming all king moves are possible
-    for(int i = 0; i < kingMoves.size(); i++){
+    for(size_t i = 0; i < kingMoves.size(); i++){
         moveNotPossible[kingMoves[i].newPos] = false;
     }
     
@@ -145,8 +145,8 @@ std::pair<int,int> Board::kingLocation(Colour colour) const{
     std::pair<int,int> kingLoc = {-1,-1};
 
     //Iterate through the chess board
-    for(int i = 0; i < grid.size(); i++){
-        for(int j = 0; j < grid[i].size(); j++){
+    for(size_t i = 0; i < grid.size(); i++){
+        for(size_t j = 0; j < grid[i].size(); j++){
             if(!grid[i][j]->isEmpty() && grid[i][j]->piece->getColour() == colour && dynamic_cast<King*>(grid[i][j]->piece)){
                 
                 //Found a 2nd King
@@ -167,8 +167,8 @@ bool Board::isKingInCheck(Colour colour) const{
     if(kingLoc.first == -1 || kingLoc.second == -1) throw std::runtime_error("No king found");
 
     //Iterate through the chess board
-    for(int i = 0; i < grid.size(); i++){
-        for(int j = 0; j < grid[i].size(); j++){
+    for(size_t i = 0; i < grid.size(); i++){
+        for(size_t j = 0; j < grid[i].size(); j++){
             if(!grid[i][j]->isEmpty() && grid[i][j]->piece->getColour() != colour){
                 auto moves = grid[i][j]->piece->getPossibleMoves(true);
                 for(auto& move: moves){
@@ -223,8 +223,21 @@ Piece* Board::simulateMovePiece(const Move& move) {
     return capturedPiece;
 }
 
+std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, Piece* newPawnPromotionPiece) {
+    Piece* capturedPiece = grid[move.newPos.first][move.newPos.second]->piece;
+    Piece* originalPawnPiece = grid[move.oldPos.first][move.oldPos.second]->piece;
+    grid[move.newPos.first][move.newPos.second]->piece = newPawnPromotionPiece;
+    grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
+    return {capturedPiece, originalPawnPiece};
+}
+
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
     grid[move.oldPos.first][move.oldPos.second]->piece = grid[move.newPos.first][move.newPos.second]->piece;
+    grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
+}
+
+void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece, Piece* originalPawnPiece) {
+    grid[move.oldPos.first][move.oldPos.second]->piece = originalPawnPiece;
     grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
 }
 
@@ -243,5 +256,5 @@ char Board::getState(int row, int col) const{
     if(grid[row][col]->piece->getColour() == Colour::WHITE){
         return code - 32;
     }
-    return code;
+    return code; 
 }

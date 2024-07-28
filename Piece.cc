@@ -1,6 +1,7 @@
 #include "Piece.h"
 #include "Board.h"
 #include "Move.h"
+#include "PieceFactory.h"
 #include <iostream>
 
 // Piece ctor
@@ -14,11 +15,30 @@ std::vector<Move> Piece::getPossibleMoves(bool isTestingKingInCheck) {
     if (!isTestingKingInCheck) {
         std::vector<Move> validMoves;
         for (const auto& mv : allMoves) {
-            Piece* capturedPiece = board.simulateMovePiece(mv);
+            // Simulate that move
+            std::pair<Piece*, Piece*> capturedAndOriginalPawn;
+            char pawnPromotion = mv.getPawnPromotion();
+            if (pawnPromotion == ' ') {
+                capturedAndOriginalPawn.first = board.simulateMovePiece(mv);
+                capturedAndOriginalPawn.second = nullptr;
+            } else {
+                // If pawn promotion happens, create a new pawn promotion piece and delete it after simulation
+                std::unique_ptr<Piece> newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
+                std::pair<Piece*, Piece*> capturedAndOriginalPawn = board.simulateMovePiece(mv, newPawnPromotionPiece.get());
+            }
+
+            // Check if king will be in check because of move
             if (!board.isKingInCheck(colour)) {
                 validMoves.push_back(mv);
             }
-            board.undoSimulatedMove(mv, capturedPiece);
+
+            // Undo simulation move
+            if (pawnPromotion == ' ') {
+                board.undoSimulatedMove(mv, capturedAndOriginalPawn.first);
+            } else {
+                // If pawn promotion happens, keep track of original pawn for undo
+                board.undoSimulatedMove(mv, capturedAndOriginalPawn.first, capturedAndOriginalPawn.second);
+            }
         }
         return validMoves;   
     }

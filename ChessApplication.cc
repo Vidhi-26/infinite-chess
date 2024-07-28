@@ -19,6 +19,7 @@ int main(){
         else if(command == "move"){
             std::string loc1, loc2;
             char pawnPromotion;
+
             // Read the entire line after the command
             std::string curLine;
             std::getline(std::cin, curLine);
@@ -34,7 +35,12 @@ int main(){
             if(tokens.size() == 4){
                 loc1 = tokens[1];
                 loc2 = tokens[2];
+                if (tokens[3].length() != 1) {
+                    std::cout << "Invalid input. Cannot promote to " << tokens[3] << std::endl;
+                    continue;   
+                }
                 pawnPromotion = tokens[3][0];
+
                 chessGame.movePiece(loc1, loc2, pawnPromotion);
             }
 
