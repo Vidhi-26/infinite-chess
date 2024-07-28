@@ -1,6 +1,5 @@
 {
     "files.associations": {
-        "unordered_map": "cpp",
         "cctype": "cpp",
         "clocale": "cpp",
         "cmath": "cpp",
@@ -17,6 +16,7 @@
         "concepts": "cpp",
         "cstdint": "cpp",
         "deque": "cpp",
+        "unordered_map": "cpp",
         "vector": "cpp",
         "exception": "cpp",
         "algorithm": "cpp",
@@ -47,6 +47,11 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "cwctype": "cpp",
+        "iostream": "cpp",
+        "cstring": "cpp",
+        "thread": "cpp",
+        "unordered_set": "cpp"
     }
 }
