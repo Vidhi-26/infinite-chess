@@ -45,7 +45,7 @@ int main(){
                 chessGame.movePiece(loc1, loc2);
             } 
             
-            else if (tokens.size() == 0){
+            else if (tokens.size() ==0){
                 chessGame.movePiece();
             }
         }
