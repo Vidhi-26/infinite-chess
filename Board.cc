@@ -212,11 +212,13 @@ void Board::updateGameState(Colour turn){
 }
 
 void Board::movePiece(const Move& move) {
+    //std::cout<<"In move piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
 }
 
 Piece* Board::simulateMovePiece(const Move& move) {
+    //std::cout<<"In simulate move piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     Piece* capturedPiece = grid[move.newPos.first][move.newPos.second]->piece;
     grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
@@ -224,6 +226,7 @@ Piece* Board::simulateMovePiece(const Move& move) {
 }
 
 std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, Piece* newPawnPromotionPiece) {
+    //std::cout<<"In simulate move piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     Piece* capturedPiece = grid[move.newPos.first][move.newPos.second]->piece;
     Piece* originalPawnPiece = grid[move.oldPos.first][move.oldPos.second]->piece;
     grid[move.newPos.first][move.newPos.second]->piece = newPawnPromotionPiece;
@@ -232,11 +235,13 @@ std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, Piece* newP
 }
 
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
+    //std::cout<<"In simulate undo piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.oldPos.first][move.oldPos.second]->piece = grid[move.newPos.first][move.newPos.second]->piece;
     grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
 }
 
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece, Piece* originalPawnPiece) {
+    //std::cout<<"In simulate undo piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.oldPos.first][move.oldPos.second]->piece = originalPawnPiece;
     grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
 }

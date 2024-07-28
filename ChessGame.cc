@@ -109,7 +109,7 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
 
         // Check if pawn promotion applies to requested move
         Piece& piece = board->getPieceAt(newMove.oldPos.first, newMove.oldPos.second);
-        if (dynamic_cast<const Pawn*>(&piece) != nullptr) {     // Not a pawn
+        if (dynamic_cast<const Pawn*>(&piece) == nullptr) {     // Not a pawn
             std::cout << "Pawn promotion does not apply. Try again!" << std::endl;
             return;
         }

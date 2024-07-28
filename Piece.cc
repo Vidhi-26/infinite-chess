@@ -11,20 +11,21 @@ Piece::Piece(Colour colour, Board& board, int points) : colour{colour}, board{bo
 std::vector<Move> Piece::getPossibleMoves(bool isTestingKingInCheck) {
     // Get customized moves depending on Piece type
     std::vector<Move> allMoves = getPossibleMovesImpl();
-
+     
     if (!isTestingKingInCheck) {
         std::vector<Move> validMoves;
         for (const auto& mv : allMoves) {
             // Simulate that move
             std::pair<Piece*, Piece*> capturedAndOriginalPawn;
+            std::unique_ptr<Piece> newPawnPromotionPiece;
             char pawnPromotion = mv.getPawnPromotion();
             if (pawnPromotion == ' ') {
                 capturedAndOriginalPawn.first = board.simulateMovePiece(mv);
                 capturedAndOriginalPawn.second = nullptr;
             } else {
                 // If pawn promotion happens, create a new pawn promotion piece and delete it after simulation
-                std::unique_ptr<Piece> newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
-                std::pair<Piece*, Piece*> capturedAndOriginalPawn = board.simulateMovePiece(mv, newPawnPromotionPiece.get());
+                newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
+                capturedAndOriginalPawn = board.simulateMovePiece(mv, newPawnPromotionPiece.get());
             }
 
             // Check if king will be in check because of move
