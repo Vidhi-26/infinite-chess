@@ -16,7 +16,8 @@
 
 // Constructor
 ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()){
-    textObserver = std::move(std::make_unique<TextObserver>(board.get())); 
+    textObserver = std::move(std::make_unique<TextObserver>(board.get()));
+    graphicalObserver = std::move(std::make_unique<GraphicalObserver>(board.get()));
 }
 
 std::unique_ptr<Strategy> ChessGame::createStrategy(int level){

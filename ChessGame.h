@@ -6,6 +6,7 @@
 #include <vector>
 #include "Strategy.h"
 #include "TextObserver.h"
+#include "GraphicalObserver.h"
 
 class ChessGame {
 private:
@@ -13,6 +14,7 @@ private:
     std::vector<std::unique_ptr<Player>> players;
     std::unique_ptr<ScoreBoard> scoreboard;
     std::unique_ptr<TextObserver> textObserver;
+    std::unique_ptr<GraphicalObserver> graphicalObserver;
     Colour turn;
     std::vector<std::unique_ptr<Strategy>> strategies;
     std::unique_ptr<Strategy> createStrategy(int level);
