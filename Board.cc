@@ -6,7 +6,6 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <iostream>
-#include <cctype>
 
 Board::Board(int rowSize, int colSize) : grid(rowSize) {
     for (auto& row : grid) {
@@ -43,7 +42,7 @@ bool Board::isEmptyPosition(int r, int c) const {
     return grid[r][c]->isEmpty();
 }
 
-bool Board::isValidConfig(){
+bool Board::isValidConfig() {
     auto whiteKingLoc = kingLocation(Colour::BLACK);
     auto blackKingLoc = kingLocation(Colour::WHITE);
     if(whiteKingLoc.first == -1 || whiteKingLoc.second == -1 || blackKingLoc.first == -1 || whiteKingLoc.first == -1) return false;
@@ -64,8 +63,8 @@ void Board::addPiece(std::unique_ptr<Piece> piece, std::pair<int,int> loc){
     grid[loc.first][loc.second]->piece = piece.get();
     currentPieces.push_back(std::move(piece));
 }
+
 void Board::removePiece(std::pair<int, int> loc){
-    
     Piece& piece = getPieceAt(loc.first, loc.second);
     for(auto it = currentPieces.begin(); it != currentPieces.end(); ++it){
         if((*it).get() == &piece){
@@ -78,7 +77,7 @@ void Board::removePiece(std::pair<int, int> loc){
 
 void Board::reset(){
     for(int i = 0; i < grid.size(); i++){
-        for(int j = 0; j < grid[i].size(); i++){
+        for(int j = 0; j < grid[i].size(); j++){
             removePiece({i,j});
         }
     }
@@ -132,6 +131,7 @@ bool Board::isCheckMate(Colour colour) const{
             
         }
     }
+
     for(auto move: kingMoves){
         if(!moveNotPossible[move.newPos]) return false;
     }
@@ -150,7 +150,8 @@ std::pair<int,int> Board::kingLocation(Colour colour) const{
             if(!grid[i][j]->isEmpty() && grid[i][j]->piece->getColour() == colour && dynamic_cast<King*>(grid[i][j]->piece)){
                 
                 //Found a 2nd King
-                if(kingLoc.first != -1 && kingLoc.second != -1) { 
+                if(kingLoc.first != -1 && kingLoc.second != -1) {
+                    std::cout<<"Found 2nd king\n"; 
                     return {-1,-1};
                 }
                 else kingLoc = {i,j};
@@ -186,17 +187,16 @@ GameState Board::getGameState() const{
 void Board::updateGameState(Colour turn){
     bool blackKingCheck = isKingInCheck(Colour::BLACK);
     bool whiteKingCheck = isKingInCheck(Colour::WHITE);
+
     if(blackKingCheck && whiteKingCheck){
         throw std::runtime_error("Double check! Can't be possible");
     }
     if(blackKingCheck){
-        
-        bool blackCheckMate= isCheckMate(Colour::BLACK);
-        if(blackCheckMate){
+        bool blackCheckMate = isCheckMate(Colour::BLACK);
+        if(blackCheckMate) {
             gameState = GameState::WHITE_WINS;
         }
         else gameState = GameState::BLACK_IN_CHECK;
-        
     }
     else if(whiteKingCheck){
         bool whiteCheckMate = isCheckMate(Colour::WHITE);
@@ -209,7 +209,6 @@ void Board::updateGameState(Colour turn){
         gameState = GameState::DRAW;
     }
     else gameState = GameState::IN_PROGRESS;
-    
 }
 
 void Board::movePiece(const Move& move) {
@@ -217,8 +216,16 @@ void Board::movePiece(const Move& move) {
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
 }
 
-void Board::undoSimpleMove(const Move& mv) {
-    movePiece(std::move(Move{mv.newPos, mv.oldPos}));
+Piece* Board::simulateMovePiece(const Move& move) {
+    Piece* capturedPiece = grid[move.newPos.first][move.newPos.second]->piece;
+    grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
+    grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
+    return capturedPiece;
+}
+
+void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
+    grid[move.oldPos.first][move.oldPos.second]->piece = grid[move.newPos.first][move.newPos.second]->piece;
+    grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
 }
 
 void Board::render() {

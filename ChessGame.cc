@@ -22,13 +22,14 @@ ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_
 }
 
 std::unique_ptr<Strategy> ChessGame::createStrategy(int level){
-        if(level == 1){
-            return std::make_unique<Level1>();
-        }
-        else{
-            return std::make_unique<Level2>();
-        }
+    if(level == 1){
+        return std::make_unique<Level1>();
+    }
+    else{
+        return std::make_unique<Level2>();
+    }
 }
+
 void ChessGame::addPlayers(std::string whitePlayer, std::string blackPlayer){
     if(whitePlayer == "human"){
         auto newPlayer = std::make_unique<HumanPlayer>(Colour::WHITE, *board);
@@ -64,21 +65,17 @@ void ChessGame::postMoveAction(){
     turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
     board->updateGameState(turn);
     GameState curState = board->getGameState();
-    // TODO: Make a switch statement, and return Color from GameState to scoreboard
-    // Use ColorUtils!
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
         scoreboard->updateScores(ColourUtils::getWinner(curState));
         board->reset();
     }
     else if(curState == GameState::BLACK_IN_CHECK){
-        //Display to screen
+        std::cout << "Black in check" << std::endl;
     }
     else if(curState == GameState::WHITE_IN_CHECK){
-        //Display to screen
+        std::cout << "White in check" << std::endl;
     }
-    else{
-        board->render();
-    }
+    board->render();
 }
 
 // Method to move a piece from loc1 to loc2
@@ -88,18 +85,31 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
     auto l2 = getLocation(loc2);
     
     Move newMove{l1.first, l1.second, l2.first, l2.second};
+
+    // Input validation
     if (board->isEmptyPosition(newMove.oldPos.first, newMove.oldPos.second)){
         std::cout<<"No piece exists there"<<std::endl;
         return;
+    } else if (turn != board->getPieceAt(newMove.oldPos.first, newMove.oldPos.second).getColour()) {
+        std::cout<<"It is not your turn! Pass to next player" << std::endl;
+        return;
     }
+
     if(pawnPromotion != ' '){
         newMove.addPawnPromotion(pawnPromotion);
     }
-    if(turn == Colour::WHITE){
-        players[0]->playTurn(newMove);
+
+    try{
+        if(turn == Colour::WHITE){
+            players[0]->playTurn(newMove);
+        } else {
+            players[1]->playTurn(newMove);
+        }
+        postMoveAction();
     }
-    else players[1]->playTurn(newMove);
-    postMoveAction();
+    catch(std::runtime_error e) {
+        std::cerr << e.what() << std::endl;
+    }
 }
 
 void ChessGame::movePiece(){
@@ -169,7 +179,6 @@ void ChessGame::removePiece(std::string loc) {
 
 // Method to check if the board configuration is valid
 bool ChessGame::isBoardConfigValid() {
-    std::cout << "hi\n";
     return board->isValidConfig();
 }
 

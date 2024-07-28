@@ -31,8 +31,6 @@ int main(){
             }
 
             // Extract loc1, loc2, pawnPromotion from the line if available
-            std::cout << curLine << "\n";
-
             if(tokens.size() == 4){
                 loc1 = tokens[1];
                 loc2 = tokens[2];
@@ -44,12 +42,10 @@ int main(){
             else if (tokens.size() == 3) {
                 loc1 = tokens[1];
                 loc2 = tokens[2];
-                std::cout<<"moving piece from "<<loc1<<" to "<<loc2<<std::endl;
                 chessGame.movePiece(loc1, loc2);
             } 
             
             else if (tokens.size() == 0){
-                std::cout<<"moving piece"<<std::endl;
                 chessGame.movePiece();
             }
         }
@@ -60,7 +56,6 @@ int main(){
                 if(setupCmd == "+"){
                     std::string piece, loc;
                     std::cin>>piece>>loc;
-                    std::cout << "added piece\n";
                     chessGame.addPiece(piece,loc);
                 }
                 else if(setupCmd == "-"){

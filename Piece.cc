@@ -14,11 +14,11 @@ std::vector<Move> Piece::getPossibleMoves(bool isTestingKingInCheck) {
     if (!isTestingKingInCheck) {
         std::vector<Move> validMoves;
         for (const auto& mv : allMoves) {
-            board.movePiece(mv);
+            Piece* capturedPiece = board.simulateMovePiece(mv);
             if (!board.isKingInCheck(colour)) {
                 validMoves.push_back(mv);
             }
-            board.undoSimpleMove(mv);
+            board.undoSimulatedMove(mv, capturedPiece);
         }
         return validMoves;   
     }
