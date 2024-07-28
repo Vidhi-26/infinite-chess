@@ -75,7 +75,6 @@ void ChessGame::postMoveAction(){
 }
 
 // Method to move a piece from loc1 to loc2
-// TODO: Make pawnPromotion char
 void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion) {
     auto l1 = getLocation(loc1);
     auto l2 = getLocation(loc2);
