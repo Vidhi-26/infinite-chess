@@ -59,8 +59,8 @@ int main(){
                     chessGame.addPiece(piece,loc);
                 }
                 else if(setupCmd == "-"){
-                    std::string loc;
-                    std::cin>>loc;
+                    std::string piece, loc;
+                    std::cin>>piece>>loc;
                     chessGame.removePiece(loc);
                 }
                 else if(setupCmd == "="){

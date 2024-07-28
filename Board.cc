@@ -72,7 +72,7 @@ void Board::removePiece(std::pair<int, int> loc){
             break;
         }
     }
-    grid[loc.first][loc.second] = nullptr;
+    grid[loc.first][loc.second]->piece = nullptr;
 }
 
 void Board::reset(){

@@ -4,9 +4,11 @@
 #include "Piece.h"
 #include "Colour.h"
 #include "Move.h"
+#include "StrategyUtils.h"
 #include <unordered_map>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 
 Level3::Level3() {}
 
@@ -38,21 +40,32 @@ Move Level3::getStrategyImpl(Board& board, Colour colour) {
         }
     }
 
-    if(piecesWithThreat.size() == 0) return Level2::getStrategyImpl(board, colour);
+    //If no pieces are under a threat, then add all the pieces
+    if(piecesWithThreat.size() == 0) {
+        // for(auto it = board.begin(); it != board.end(); ++it){
+        //     auto square = (*it);
+        //     if(!square.isEmpty() && square.piece->getColour() == colour) {
+        //         piecesWithThreat.push_back(square.piece);
+        //     }
+        // }
+        std::vector<Move> possibleMoves;
+        possibleMoves.push_back(Level2::getStrategyImpl(board, colour));
+        possibleMoves.push_back(Level1::getStrategyImpl(board, colour));
+        return StrategyUtils::getRandomMove(possibleMoves);
+    }
     
+    //Layer 2: For all the pieces that have a threat, try to move the piece that is worth the most
     auto comparePieces = [](Piece* a, Piece* b) {
         if(!a || !b) throw std::runtime_error("Internal error - piece ptr is null");
         return a->getPoints() > b->getPoints(); 
     };
     std::sort(piecesWithThreat.begin(), piecesWithThreat.end(), comparePieces);
 
-    //Layer 2 - Don't go somewhere where you would be captured
-    std::vector<Move> possibleMoves;
-    for(auto it = board.begin(); it != board.end(); ++it){
-        auto square = (*it);
-        if(square.isEmpty() || square.piece->getColour() != colour) continue;
-        auto moves = square.piece->getPossibleMoves();
+    for(auto it = piecesWithThreat.begin(); it != piecesWithThreat.end(); ++it){
+      
+        auto moves = (*it)->getPossibleMoves();
         
+        std::vector<Move> safeMoves;
         for(auto& move: moves){
             
             //Simulate the move
@@ -71,13 +84,20 @@ Move Level3::getStrategyImpl(Board& board, Colour colour) {
                         break;
                     }
                 }
+                if(canCapture) break;
             }
 
             //Revert the move
             board.movePiece(Move(move.newPos, move.oldPos));
             
             if(canCapture) continue;
-            possibleMoves.push_back(move);
+            safeMoves.push_back(move);
+        }
+        if(safeMoves.size() > 0){
+            Move selectedMove = StrategyUtils::getRandomMove(safeMoves);
+            std::cout<<"Level 3 move: "<<selectedMove.oldPos.first<<" "<<selectedMove.oldPos.second<<" "<<selectedMove.newPos.first<<" "<<selectedMove.newPos.second<<std::endl;
+            return selectedMove;
         }
     }
+    return Level2::getStrategyImpl(board, colour);
 }

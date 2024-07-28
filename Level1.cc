@@ -1,9 +1,7 @@
 #include "Level1.h"
 #include "Board.h"
 #include "Move.h"
-#include <random>
-#include <chrono>
-#include <algorithm>
+#include "StrategyUtils.h"
 #include <iostream>
 
 Level1::Level1() {}
@@ -21,13 +19,5 @@ Move Level1::getStrategyImpl(Board& board, Colour colour) {
         }
     }
     
-    // use a time-based seed for the default seed value
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine rng{seed};
-
-	for (int i = 0; i < 10; i++) {
-		std::shuffle(potentialMoves.begin(), potentialMoves.end(), rng);
-	}
-    
-    return potentialMoves.front();
+    return StrategyUtils::getRandomMove(potentialMoves);
 }
