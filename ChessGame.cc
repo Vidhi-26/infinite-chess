@@ -165,7 +165,10 @@ void ChessGame::movePiece(){
 
 // Method to accept resignation
 void ChessGame::acceptResignation() {
-    std::cout << ((turn == Colour::WHITE) ? "Black" : "White") << " wins by resignation." << std::endl;
+    Colour winner = turn == Colour::BLACK ? Colour::WHITE : Colour::BLACK;
+    scoreboard->updateScores(winner);
+    board->reset();
+    std::cout<<"Game over!\n";
 }
 
 // Method to set the turn

@@ -78,6 +78,7 @@ void Board::removePiece(std::pair<int, int> loc){
 void Board::reset(){
     for(size_t i = 0; i < grid.size(); i++){
         for(size_t j = 0; j < grid[i].size(); j++){
+            if()
             removePiece({i,j});
         }
     }
