@@ -7,7 +7,7 @@
 
 Level2::Level2() {}
 
-Move Level2::getStrategyImpl(const Board& board, Colour colour) const{
+Move Level2::getStrategyImpl(Board& board, Colour colour) {
     //Keep track of the best move (categorized by most points acquired by capturing)
     Move bestMove{}; 
     int bestScore = -1;
@@ -25,16 +25,28 @@ Move Level2::getStrategyImpl(const Board& board, Colour colour) const{
         for(auto& move: moves){
             
             //Check if there is a piece
-            if(board.isEmptyPosition(move.newPos.first, move.newPos.second)) continue;
-            Piece& enemy= board.getPieceAt(move.newPos.first, move.newPos.second);
-            
-            //Check if it is an enemy piece and if it has more points
-            if(enemy.getColour() != colour && enemy.getPoints() > bestScore){
-
-                //Update best move
-                bestMove = move;
-                bestScore = enemy.getPoints();
+            if(board.isEmptyPosition(move.newPos.first, move.newPos.second)) {
+                
+                //Simulate a move
+                board.movePiece(move);
+                if(board.isKingInCheck(colour == Colour::BLACK ? Colour::WHITE : Colour::BLACK)){
+                    bestMove = move;
+                }
+                //Revert
+                board.movePiece(Move(move.newPos, move.oldPos));
             }
+            else{
+                Piece& enemy= board.getPieceAt(move.newPos.first, move.newPos.second);
+            
+                //Check if it is an enemy piece and if it has more points
+                if(enemy.getColour() != colour && enemy.getPoints() > bestScore){
+
+                    //Update best move
+                    bestMove = move;
+                    bestScore = enemy.getPoints();
+                }
+            }
+            
         }
     }
 

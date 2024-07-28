@@ -5,7 +5,7 @@ class Move;
 
 class Level2: public Level1 {
 private:
-    Move getStrategyImpl(const Board&, Colour) const override;
+    Move getStrategyImpl(Board&, Colour) override;
 
 public:
     Level2();

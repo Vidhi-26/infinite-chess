@@ -15,6 +15,8 @@
 #include "Strategy.h"
 #include "Level1.h"
 #include "Level2.h"
+#include "Level3.h"
+#include "Level4.h"
 
 // Constructor
 ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()){
@@ -25,33 +27,41 @@ std::unique_ptr<Strategy> ChessGame::createStrategy(int level){
     if(level == 1){
         return std::make_unique<Level1>();
     }
-    else{
+    else if(level == 2){
         return std::make_unique<Level2>();
+    }
+    else if(level == 3){
+        return std::make_unique<Level3>();
+    }
+    else if(level == 4){
+        return std::make_unique<Level4>();
+    }
+    else{
+        throw std::runtime_error("Specify computer level to be in [1-4]");
     }
 }
 
+void ChessGame::createPlayer(std::string player, Colour colour){
+    try{
+        if(player == "human"){
+            auto newPlayer = std::make_unique<HumanPlayer>(colour, *board);
+            players.push_back(std::move(newPlayer));
+        }
+        else if(player.substr(0, 8) == "computer"){
+            int level = stoi(player.substr(9,1));
+            strategies.push_back(std::move(createStrategy(level)));
+            auto newPlayer = std::make_unique<ComputerPlayer>(colour, *board, *strategies.back());
+            players.push_back(std::move(newPlayer));
+        }
+    }
+    catch(std::runtime_error e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+   
 void ChessGame::addPlayers(std::string whitePlayer, std::string blackPlayer){
-    if(whitePlayer == "human"){
-        auto newPlayer = std::make_unique<HumanPlayer>(Colour::WHITE, *board);
-        players.push_back(std::move(newPlayer));
-    }
-    else if(whitePlayer.substr(0, 8) == "computer"){
-        int level = stoi(whitePlayer.substr(9,1));
-        strategies.push_back(std::move(createStrategy(level)));
-        auto newPlayer = std::make_unique<ComputerPlayer>(Colour::WHITE, *board, *strategies.back());
-        players.push_back(std::move(newPlayer));
-    }
-
-    if(blackPlayer == "human"){
-        auto newPlayer = std::make_unique<HumanPlayer>(Colour::BLACK, *board);
-        players.push_back(std::move(newPlayer));
-    }
-    else if(blackPlayer.substr(0, 8) == "computer"){
-        int level = stoi(blackPlayer.substr(9,1));
-        strategies.push_back(std::move(createStrategy(level)));
-        auto newPlayer = std::make_unique<ComputerPlayer>(Colour::BLACK, *board, *strategies.back());
-        players.push_back(std::move(newPlayer));
-    }
+    createPlayer(whitePlayer, Colour::WHITE);
+    createPlayer(blackPlayer, Colour::BLACK);
     turn = Colour::WHITE;
 }
 
@@ -66,6 +76,8 @@ void ChessGame::postMoveAction(){
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
         scoreboard->updateScores(ColourUtils::getWinner(curState));
         board->reset();
+        std::cout<<"Game over!\n";
+        return;
     }
     else if(curState == GameState::BLACK_IN_CHECK){
         std::cout << "Black in check" << std::endl;
@@ -113,8 +125,10 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
 void ChessGame::movePiece(){
     try{
         if(turn == Colour::WHITE){
+            std::cout<<"white's move\n";
             players[0]->playTurn();
         } else {
+            std::cout<<"black's move\n";
             players[1]->playTurn();
         }
         postMoveAction();
