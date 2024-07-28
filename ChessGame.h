@@ -25,8 +25,8 @@ public:
     void addPlayers(std::string player1, std::string player2);
     void acceptResignation();
     void setTurn(std::string);
-    void addPiece(std::string piece, std::string loc);
-    void removePiece(std::string loc);
+    bool addPiece(std::string piece, std::string loc);
+    bool removePiece(std::string loc);
     bool isBoardConfigValid();
 };
 

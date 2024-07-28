@@ -156,16 +156,26 @@ void ChessGame::setTurn(std::string colour) {
 }
 
 // Method to add a piece to the board
-void ChessGame::addPiece(std::string key, std::string loc) {
+bool ChessGame::addPiece(std::string key, std::string loc) {
+    if (!board->isEmptyPosition(getLocation(loc).first, getLocation(loc).second)) {
+        return false;
+    }
+    
     std::unique_ptr<Piece> piece = std::move(PieceFactory::createPiece(key[0], *board));
     if (piece) {
         (*board).addPiece(std::move(piece), getLocation(loc));
     }
+    return true;
 }
 
 // Method to remove a piece from the board
-void ChessGame::removePiece(std::string loc) {
-    (*board).removePiece(getLocation(loc));   
+bool ChessGame::removePiece(std::string loc) {
+    if (board->isEmptyPosition(getLocation(loc).first, getLocation(loc).second)) {
+        return false;
+    }
+
+    board->removePiece(getLocation(loc));   
+    return true;
 }
 
 // Method to check if the board configuration is valid

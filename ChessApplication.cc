@@ -62,12 +62,16 @@ int main(){
                 if(setupCmd == "+"){
                     std::string piece, loc;
                     std::cin>>piece>>loc;
-                    chessGame.addPiece(piece,loc);
+                    if (!chessGame.addPiece(piece,loc)) {
+                        std::cout << "Add failed. Another already exists here!" << std::endl;
+                    }
                 }
                 else if(setupCmd == "-"){
-                    std::string loc;
-                    std::cin>>loc;
-                    chessGame.removePiece(loc);
+                    std::string piece, loc;
+                    std::cin>>piece>>loc;
+                    if (!chessGame.removePiece(loc)) {
+                        std::cout << "Remove failed. No piece exists here!" << std::endl;
+                    }
                 }
                 else if(setupCmd == "="){
                     std::string colour;

@@ -17,6 +17,7 @@ void Player::playTurn(const Move& moveRequest) {
     if (pawnPromotion != ' ') {
         std::unique_ptr<Piece> piece = std::move(PieceFactory::createPiece(pawnPromotion, board));
         board.addPiece(std::move(piece), decidedMove.newPos);
+        board.removePiece(decidedMove.oldPos);
     } else {
         board.movePiece(decidedMove);
     }
