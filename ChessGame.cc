@@ -1,11 +1,6 @@
 #include "ChessGame.h"
 #include <iostream>
-#include "Rook.h"
-#include "Bishop.h"
-#include "Knight.h"
-#include "Queen.h"
-#include "King.h"
-#include "Pawn.h"
+#include "PieceFactory.h"
 #include "Board.h"
 #include "Move.h"
 #include "HumanPlayer.h"
@@ -15,6 +10,7 @@
 #include "Strategy.h"
 #include "Level1.h"
 #include "Level2.h"
+#include <unordered_set>
 
 // Constructor
 ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()){
@@ -93,7 +89,36 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
         return;
     }
 
+    // Check for pawn promotion
     if(pawnPromotion != ' '){
+        // Input validation for pawn promotion
+        std::unordered_set<char> validPromotions{'q', 'r', 'b', 'n'};
+        if (turn == Colour::WHITE) {
+            if (!isupper(pawnPromotion) || validPromotions.find(tolower(pawnPromotion)) == validPromotions.end()) {
+                std::cout << "Invalid input. Cannot promote to " << pawnPromotion << std::endl;
+                return;
+            }
+        } else if (turn == Colour::BLACK) {
+            if (validPromotions.find(tolower(pawnPromotion)) == validPromotions.end()) {
+                std::cout << "Inavlid input. Cannot promote to " << pawnPromotion << std::endl;
+                return;
+            }
+        }
+
+        // Check if pawn promotion applies to requested move
+        Piece& piece = board->getPieceAt(newMove.oldPos.first, newMove.oldPos.second);
+        if (dynamic_cast<const Pawn*>(&piece) == nullptr) {     // Not a pawn
+            std::cout << "Pawn promotion does not apply. Try again!" << std::endl;
+            return;
+        }
+
+        bool isValidPawnMove = (turn == Colour::WHITE && newMove.oldPos.first == 6 && newMove.newPos.first == 7) ||
+                               (turn == Colour::BLACK && newMove.oldPos.first == 1 && newMove.newPos.first == 0);
+        if (!isValidPawnMove) {
+            std::cout << "Pawn promotion does not apply. Try again!" << std::endl;
+            return;
+        }
+
         newMove.addPawnPromotion(pawnPromotion);
     }
 
@@ -135,54 +160,29 @@ void ChessGame::setTurn(std::string colour) {
 }
 
 // Method to add a piece to the board
-void ChessGame::addPiece(std::string key, std::string loc) {
-    std::unique_ptr<Piece> piece;
-    if(key == "R"){
-        piece = std::make_unique<Rook>(Colour::WHITE, *board);
+bool ChessGame::addPiece(std::string key, std::string loc) {
+    if (!board->isEmptyPosition(getLocation(loc).first, getLocation(loc).second)) {
+        return false;
     }
-    else if(key == "N"){
-        piece = std::make_unique<Knight>(Colour::WHITE, *board);
+    
+    std::unique_ptr<Piece> piece = std::move(PieceFactory::createPiece(key[0], *board));
+    if (piece) {
+        (*board).addPiece(std::move(piece), getLocation(loc));
     }
-    else if(key == "B"){
-        piece = std::make_unique<Bishop>(Colour::WHITE, *board);
-    }
-    else if(key == "Q"){
-       piece = std::make_unique<Queen>(Colour::WHITE, *board);
-    }
-    else if(key == "K"){
-        piece = std::make_unique<King>(Colour::WHITE,*board);
-    }
-    else if(key == "P"){
-        piece = std::make_unique<Pawn>(Colour::WHITE, *board);
-    }
-    else if(key == "r"){
-        piece = std::make_unique<Rook>(Colour::BLACK, *board);
-    }
-    else if(key == "n"){
-        piece = std::make_unique<Knight>(Colour::BLACK, *board);
-    }
-    else if(key == "b"){
-        piece = std::make_unique<Bishop>(Colour::BLACK, *board);
-    }
-    else if(key == "q"){
-        piece = std::make_unique<Queen>(Colour::BLACK, *board);
-    }
-    else if(key == "k"){
-        piece = std::make_unique<King>(Colour::BLACK, *board);
-    }
-    else if(key == "p"){
-        piece = std::make_unique<Pawn>(Colour::BLACK, *board);
-    }
-    (*board).addPiece(std::move(piece), getLocation(loc));
+    return true;
 }
 
 // Method to remove a piece from the board
-void ChessGame::removePiece(std::string loc) {
-    (*board).removePiece(getLocation(loc));   
+bool ChessGame::removePiece(std::string loc) {
+    if (board->isEmptyPosition(getLocation(loc).first, getLocation(loc).second)) {
+        return false;
+    }
+
+    board->removePiece(getLocation(loc));   
+    return true;
 }
 
 // Method to check if the board configuration is valid
 bool ChessGame::isBoardConfigValid() {
     return board->isValidConfig();
 }
-

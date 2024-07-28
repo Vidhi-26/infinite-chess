@@ -4,6 +4,7 @@
 
 class Pawn : public Piece {
 private:
+    std::vector<char> pawnPromotions{'q', 'r', 'b', 'n'};
     std::vector<Move> getPossibleMovesImpl() const override;
     char getCodeImpl() const override;
 public:

@@ -19,6 +19,7 @@ int main(){
         else if(command == "move"){
             std::string loc1, loc2;
             char pawnPromotion;
+
             // Read the entire line after the command
             std::string curLine;
             std::getline(std::cin, curLine);
@@ -34,7 +35,12 @@ int main(){
             if(tokens.size() == 4){
                 loc1 = tokens[1];
                 loc2 = tokens[2];
+                if (tokens[3].length() != 1) {
+                    std::cout << "Invalid input. Cannot promote to " << tokens[3] << std::endl;
+                    continue;   
+                }
                 pawnPromotion = tokens[3][0];
+
                 chessGame.movePiece(loc1, loc2, pawnPromotion);
             }
 
@@ -56,12 +62,16 @@ int main(){
                 if(setupCmd == "+"){
                     std::string piece, loc;
                     std::cin>>piece>>loc;
-                    chessGame.addPiece(piece,loc);
+                    if (!chessGame.addPiece(piece,loc)) {
+                        std::cout << "Add failed. Another already exists here!" << std::endl;
+                    }
                 }
                 else if(setupCmd == "-"){
-                    std::string loc;
-                    std::cin>>loc;
-                    chessGame.removePiece(loc);
+                    std::string piece, loc;
+                    std::cin>>piece>>loc;
+                    if (!chessGame.removePiece(loc)) {
+                        std::cout << "Remove failed. No piece exists here!" << std::endl;
+                    }
                 }
                 else if(setupCmd == "="){
                     std::string colour;

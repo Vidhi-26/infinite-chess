@@ -5,17 +5,18 @@
 
 class Move {
 private:
-    char pawnPromotion = ' ';
+    char pawnPromotion;
     
 public:
     std::pair<int, int> oldPos;
     std::pair<int, int> newPos;
 
-    Move(int = -1, int = -1, int = -1, int = -1);
-    Move(std::pair<int, int>, std::pair<int, int>);
+    Move(int = -1, int = -1, int = -1, int = -1, char = ' ');
+    Move(std::pair<int, int>, std::pair<int, int>, char = ' ');
     ~Move() = default;
 
     void addPawnPromotion(char);
+    char getPawnPromotion() const;
     bool operator==(const Move& move) const;
 };
 

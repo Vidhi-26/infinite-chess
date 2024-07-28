@@ -1,6 +1,7 @@
 #include "Piece.h"
 #include "Board.h"
 #include "Move.h"
+#include "PieceFactory.h"
 #include <iostream>
 
 // Piece ctor
@@ -10,15 +11,35 @@ Piece::Piece(Colour colour, Board& board, int points) : colour{colour}, board{bo
 std::vector<Move> Piece::getPossibleMoves(bool isTestingKingInCheck) {
     // Get customized moves depending on Piece type
     std::vector<Move> allMoves = getPossibleMovesImpl();
-
+     
     if (!isTestingKingInCheck) {
         std::vector<Move> validMoves;
         for (const auto& mv : allMoves) {
-            Piece* capturedPiece = board.simulateMovePiece(mv);
+            // Simulate that move
+            std::pair<Piece*, Piece*> capturedAndOriginalPawn;
+            std::unique_ptr<Piece> newPawnPromotionPiece;
+            char pawnPromotion = mv.getPawnPromotion();
+            if (pawnPromotion == ' ') {
+                capturedAndOriginalPawn.first = board.simulateMovePiece(mv);
+                capturedAndOriginalPawn.second = nullptr;
+            } else {
+                // If pawn promotion happens, create a new pawn promotion piece and delete it after simulation
+                newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
+                capturedAndOriginalPawn = board.simulateMovePiece(mv, newPawnPromotionPiece.get());
+            }
+
+            // Check if king will be in check because of move
             if (!board.isKingInCheck(colour)) {
                 validMoves.push_back(mv);
             }
-            board.undoSimulatedMove(mv, capturedPiece);
+
+            // Undo simulation move
+            if (pawnPromotion == ' ') {
+                board.undoSimulatedMove(mv, capturedAndOriginalPawn.first);
+            } else {
+                // If pawn promotion happens, keep track of original pawn for undo
+                board.undoSimulatedMove(mv, capturedAndOriginalPawn.first, capturedAndOriginalPawn.second);
+            }
         }
         return validMoves;   
     }
