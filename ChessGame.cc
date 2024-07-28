@@ -33,9 +33,8 @@ void ChessGame::addPlayers(std::string whitePlayer, std::string blackPlayer){
     }
     else if(whitePlayer.substr(0, 8) == "computer"){
         int level = stoi(whitePlayer.substr(9,1));
-        auto strategy = createStrategy(level);
-        strategies.push_back(std::move(strategy));
-        auto newPlayer = std::make_unique<ComputerPlayer>(Colour::WHITE, *board, *strategy);
+        strategies.push_back(std::move(createStrategy(level)));
+        auto newPlayer = std::make_unique<ComputerPlayer>(Colour::WHITE, *board, *strategies.back());
         players.push_back(std::move(newPlayer));
     }
 
@@ -44,10 +43,9 @@ void ChessGame::addPlayers(std::string whitePlayer, std::string blackPlayer){
         players.push_back(std::move(newPlayer));
     }
     else if(blackPlayer.substr(0, 8) == "computer"){
-        int level = stoi(whitePlayer.substr(9,1));
-        auto strategy = createStrategy(level);
-        strategies.push_back(std::move(strategy));
-        auto newPlayer = std::make_unique<ComputerPlayer>(Colour::BLACK, *board, *strategy);
+        int level = stoi(blackPlayer.substr(9,1));
+        strategies.push_back(std::move(createStrategy(level)));
+        auto newPlayer = std::make_unique<ComputerPlayer>(Colour::BLACK, *board, *strategies.back());
         players.push_back(std::move(newPlayer));
     }
     turn = Colour::WHITE;
@@ -137,11 +135,17 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
 }
 
 void ChessGame::movePiece(){
-    if(turn == Colour::WHITE){
-        players[0]->playTurn();
+    try{
+        if(turn == Colour::WHITE){
+            players[0]->playTurn();
+        } else {
+            players[1]->playTurn();
+        }
+        postMoveAction();
     }
-    else players[1]->playTurn();
-    postMoveAction();
+    catch(std::runtime_error e) {
+        std::cerr << e.what() << std::endl;
+    }
 }
 
 // Method to accept resignation
