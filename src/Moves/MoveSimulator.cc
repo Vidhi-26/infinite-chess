@@ -19,10 +19,13 @@ std::vector<Move> MoveSimulator::simulateMove(std::vector<Move> allMoves, Board&
         char pawnPromotion = mv.getPawnPromotion();
 
         // Simulate move mv
-        if (pawnPromotion == ' ') {     // Normal case
+        if (pawnPromotion == ' ') {         // Normal case
             capturedAndOriginalPawn.first = board.simulateMovePiece(mv);
             capturedAndOriginalPawn.second = nullptr;
-        } else {                        // Pawn promotion case
+        } else if (pawnPromotion == 'e') {  // En passant case
+            capturedAndOriginalPawn.first = nullptr;
+            capturedAndOriginalPawn.second = board.simulateMovePiece(mv, 'e');
+        } else {                            // Pawn promotion case
             newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
             capturedAndOriginalPawn = board.simulateMovePiece(mv, newPawnPromotionPiece.get());
         }
@@ -35,6 +38,8 @@ std::vector<Move> MoveSimulator::simulateMove(std::vector<Move> allMoves, Board&
         // Undo simulated move mv
         if (pawnPromotion == ' ') {     // Normal case
             board.undoSimulatedMove(mv, capturedAndOriginalPawn.first);
+        } else if (pawnPromotion == 'e') {
+            board.undoSimulatedMove(mv, capturedAndOriginalPawn.second, 'e');
         } else {                        // Pawn promotion case
             board.undoSimulatedMove(mv, capturedAndOriginalPawn.first, capturedAndOriginalPawn.second);
         }

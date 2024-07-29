@@ -211,6 +211,7 @@ void Board::updateGameState(Colour turn){
     else gameState = GameState::IN_PROGRESS;
 }
 
+// Move simulations
 void Board::movePiece(const Move& move) {
     //std::cout<<"In move piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
@@ -234,6 +235,14 @@ std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, Piece* newP
     return {capturedPiece, originalPawnPiece};
 }
 
+Piece* Board::simulateMovePiece(const Move& move, char specialReq) {
+    if (specialReq == 'e') {
+        
+    }
+    return nullptr;
+}
+
+// Undo move simulations
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
     //std::cout<<"In simulate undo piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.oldPos.first][move.oldPos.second]->piece = grid[move.newPos.first][move.newPos.second]->piece;
@@ -244,6 +253,12 @@ void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece, Piece* ori
     //std::cout<<"In simulate undo piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.oldPos.first][move.oldPos.second]->piece = originalPawnPiece;
     grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
+}
+
+void undoSimulatedMove(const Move& move, Piece*, char specialReq) {
+    if (specialReq == 'e') {
+
+    }
 }
 
 void Board::render() {

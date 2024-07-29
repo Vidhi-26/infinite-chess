@@ -32,8 +32,11 @@ public:
     // Move simulations
     Piece* simulateMovePiece(const Move&);
     std::pair<Piece*, Piece*> simulateMovePiece(const Move&, Piece*);
+    Piece* simulateMovePiece(const Move&, char);
+
     void undoSimulatedMove(const Move&, Piece*);
     void undoSimulatedMove(const Move&, Piece*, Piece*);
+    void undoSimulatedMove(const Move&, Piece*, char);
 
     // Getters for board pieces
     std::pair<int, int> getPositionOfPiece(const Piece&) const;
