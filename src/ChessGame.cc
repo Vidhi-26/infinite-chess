@@ -10,9 +10,9 @@
 #include "./Strategies/Strategy.h"
 #include "./Strategies/Level1.h"
 #include "./Strategies/Level2.h"
+#include "./Strategies/Level3.h"
+#include "./Strategies/Level4.h"
 #include <unordered_set>
-#include "Level3.h"
-#include "Level4.h"
 
 // Constructor
 ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()){
