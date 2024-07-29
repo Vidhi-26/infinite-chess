@@ -237,7 +237,13 @@ std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, Piece* newP
 
 Piece* Board::simulateMovePiece(const Move& move, char specialReq) {
     if (specialReq == 'e') {
-        
+        Piece* capturedPawn = grid[move.oldPos.first][move.newPos.second]->piece;
+
+        grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
+        grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
+        grid[move.oldPos.first][move.newPos.second]->piece = nullptr;   // en-passante pawn
+
+        return capturedPawn;
     }
     return nullptr;
 }
@@ -255,9 +261,11 @@ void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece, Piece* ori
     grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
 }
 
-void undoSimulatedMove(const Move& move, Piece*, char specialReq) {
+void Board::undoSimulatedMove(const Move& move, Piece* capturedPawn, char specialReq) {
     if (specialReq == 'e') {
-
+        grid[move.oldPos.first][move.oldPos.second]->piece = grid[move.newPos.first][move.newPos.second]->piece;
+        grid[move.newPos.first][move.newPos.second]->piece = nullptr;
+        grid[move.oldPos.first][move.newPos.second]->piece = capturedPawn;
     }
 }
 

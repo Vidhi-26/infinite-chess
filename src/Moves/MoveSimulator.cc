@@ -36,11 +36,11 @@ std::vector<Move> MoveSimulator::simulateMove(std::vector<Move> allMoves, Board&
         }
 
         // Undo simulated move mv
-        if (pawnPromotion == ' ') {     // Normal case
+        if (pawnPromotion == ' ') {         // Normal case
             board.undoSimulatedMove(mv, capturedAndOriginalPawn.first);
-        } else if (pawnPromotion == 'e') {
+        } else if (pawnPromotion == 'e') {  // En passant case
             board.undoSimulatedMove(mv, capturedAndOriginalPawn.second, 'e');
-        } else {                        // Pawn promotion case
+        } else {                            // Pawn promotion case
             board.undoSimulatedMove(mv, capturedAndOriginalPawn.first, capturedAndOriginalPawn.second);
         }
     }
