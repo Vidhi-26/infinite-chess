@@ -1,6 +1,5 @@
 {
     "files.associations": {
-        "unordered_map": "cpp",
         "cctype": "cpp",
         "clocale": "cpp",
         "cmath": "cpp",
@@ -17,6 +16,7 @@
         "concepts": "cpp",
         "cstdint": "cpp",
         "deque": "cpp",
+        "unordered_map": "cpp",
         "vector": "cpp",
         "exception": "cpp",
         "algorithm": "cpp",
@@ -52,6 +52,6 @@
         "iostream": "cpp",
         "cstring": "cpp",
         "thread": "cpp",
-        "chrono": "cpp"
+        "unordered_set": "cpp"
     }
 }
