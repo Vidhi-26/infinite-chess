@@ -1,7 +1,8 @@
 CXX=g++
 CXXFLAGS=-std=c++14 -Wall -g -MMD
 EXEC=chess
-CCFILES=$(wildcard *.cc)
+SRCDIR=src
+CCFILES=$(shell find $(SRCDIR) -name '*.cc')
 OBJECTS=${CCFILES:.cc=.o}
 DEPENDS=${CCFILES:.cc=.d}
 
