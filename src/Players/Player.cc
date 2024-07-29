@@ -7,7 +7,7 @@
 
 Player::Player(Colour colour, Board& board) : colour{colour}, board{board} {}
 
-void Player::playTurn(const Move& moveRequest) {
+Move Player::playTurn(const Move& moveRequest) {
     
     Move decidedMove = getMove(moveRequest);
     if (decidedMove == Move()) {
@@ -23,4 +23,6 @@ void Player::playTurn(const Move& moveRequest) {
     } else {
         board.movePiece(decidedMove);
     }
+
+    return decidedMove;
 }

@@ -20,6 +20,8 @@ private:
     std::pair<int,int> kingLocation(Colour colour) const;
 
 public:
+    Move lastMove;
+
     // Board ctor and methods to add, remove, move pieces on board
     Board(int rowSize = 8, int colSize = 8);
     void addPiece(std::unique_ptr<Piece>, std::pair<int,int>);

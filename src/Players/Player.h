@@ -17,7 +17,7 @@ public:
     Player(Colour, Board&);
     virtual ~Player() = default;
     
-    void playTurn(const Move& move = Move());
+    Move playTurn(const Move& move = Move());
 };
 
 #endif

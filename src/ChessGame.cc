@@ -65,8 +65,9 @@ std::pair<int,int> getLocation(std::string loc){
     return {loc[1] - '1', loc[0] - 'a'};
 }
 
-void ChessGame::postMoveAction(){
+void ChessGame::postMoveAction(Move playedMove){
     turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
+    board->lastMove = playedMove;
     board->updateGameState(turn);
     GameState curState = board->getGameState();
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
@@ -134,12 +135,13 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
     }
 
     try{
+        Move playedMove;
         if(turn == Colour::WHITE){
-            players[0]->playTurn(newMove);
+            playedMove = players[0]->playTurn(newMove);
         } else {
-            players[1]->playTurn(newMove);
+            playedMove = players[1]->playTurn(newMove);
         }
-        postMoveAction();
+        postMoveAction(playedMove);
     }
     catch(std::runtime_error e) {
         std::cerr << e.what() << std::endl;
@@ -148,14 +150,15 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
 
 void ChessGame::movePiece(){
     try{
+        Move playedMove;
         if(turn == Colour::WHITE){
             std::cout<<"white's move\n";
-            players[0]->playTurn();
+            playedMove = players[0]->playTurn();
         } else {
             std::cout<<"black's move\n";
-            players[1]->playTurn();
+            playedMove = players[1]->playTurn();
         }
-        postMoveAction();
+        postMoveAction(playedMove);
     }
     catch(std::runtime_error e) {
         std::cerr << e.what() << std::endl;
