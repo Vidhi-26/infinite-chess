@@ -14,7 +14,16 @@ std::vector<Move> Piece::getPossibleMoves(bool isTestingKingInCheck) {
     std::vector<Move> allMoves = getPossibleMovesImpl();
      
     if (!isTestingKingInCheck) {
-        return MoveSimulator::simulateMove(allMoves, board, this->colour, false);
+        std::vector<Move> validMoves;
+        for (const auto& mv : allMoves) {
+            auto metaData = MoveSimulator::simulateMove(mv, board);
+             // Check if king will be in check because of move
+            if (!board.isKingInCheck(colour)) {
+                validMoves.push_back(mv);
+            }
+            MoveSimulator::undoMove(mv, board, metaData);
+        }
+        return validMoves;
     }
 
     return allMoves;

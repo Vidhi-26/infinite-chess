@@ -6,7 +6,7 @@
 #include "../Moves/Move.h"
 #include <unordered_map>
 #include <climits>
-#include "ColourUtils.h"
+#include "../ColourUtils.h"
 
 Level4::Level4() {}
 
@@ -74,16 +74,16 @@ int minimax(Board& board, int depth, bool isMaximizingPlayer, Colour colour, int
     }
 }
 
-
-
 Move Level4::getStrategyImpl(Board& board, Colour colour) {
     int bestValue = INT_MIN;
     Move bestMove;
-    std::vector<Move> legalMoves = getAllLegalMoves(board, colour);  // Assume Board has getAllLegalMoves method
+    std::vector<Move> legalMoves = getAllLegalMoves(board, colour); 
 
     for (const auto& move : legalMoves) {
         Piece* capturedPiece = board.simulateMovePiece(move);
-        int moveValue = minimax(board, 3, false, ColourUtils::oppositeColour(colour), INT_MIN, INT_MAX); // Depth 3 for example
+
+        //Depth 3
+        int moveValue = minimax(board, 3, false, ColourUtils::oppositeColour(colour), INT_MIN, INT_MAX);
         board.undoSimulatedMove(move, capturedPiece);
 
         if (moveValue > bestValue) {

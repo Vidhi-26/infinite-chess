@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <iostream>
+#include "../Moves/MoveSimulator.h"
 
 Level3::Level3() {}
 
@@ -42,15 +43,9 @@ Move Level3::getStrategyImpl(Board& board, Colour colour) {
 
     //If no pieces are under a threat, then add all the pieces
     if(piecesWithThreat.size() == 0) {
-        // for(auto it = board.begin(); it != board.end(); ++it){
-        //     auto square = (*it);
-        //     if(!square.isEmpty() && square.piece->getColour() == colour) {
-        //         piecesWithThreat.push_back(square.piece);
-        //     }
-        // }
         std::vector<Move> possibleMoves;
         possibleMoves.push_back(Level2::getStrategyImpl(board, colour));
-        possibleMoves.push_back(Level1::getStrategyImpl(board, colour));
+        //possibleMoves.push_back(Level1::getStrategyImpl(board, colour));
         return StrategyUtils::getRandomMove(possibleMoves);
     }
     
@@ -69,7 +64,7 @@ Move Level3::getStrategyImpl(Board& board, Colour colour) {
         for(auto& move: moves){
             
             //Simulate the move
-            board.movePiece(move);
+            auto metadata = MoveSimulator::simulateMove(move,board);
 
             bool canCapture = false;
             
@@ -88,7 +83,7 @@ Move Level3::getStrategyImpl(Board& board, Colour colour) {
             }
 
             //Revert the move
-            board.movePiece(Move(move.newPos, move.oldPos));
+            MoveSimulator::undoMove(move, board, metadata);
             
             if(canCapture) continue;
             safeMoves.push_back(move);

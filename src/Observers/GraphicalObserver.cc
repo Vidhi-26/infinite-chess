@@ -1,5 +1,5 @@
 #include "GraphicalObserver.h"
-#include "Board.h"
+#include "../Boards/Board.h"
 
 // Concrete Observer Implementation
 
