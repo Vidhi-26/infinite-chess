@@ -3,11 +3,15 @@
 #include <vector>
 #include "Move.h"
 #include "../Colour.h"
+#include "MoveMetaData.h"
+
 class Board;
 
 class MoveSimulator {
 public:
-    static std::vector<Move> simulateMove(std::vector<Move>, Board&, Colour, bool);
+    static MoveMetaData simulateMove(Move, Board&);
+    static void undoMove(Move, Board&, MoveMetaData);
+    MoveSimulator() = default;
 };
 
 #endif  // MOVE_SIMULATOR_H

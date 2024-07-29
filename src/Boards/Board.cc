@@ -78,9 +78,12 @@ void Board::removePiece(std::pair<int, int> loc){
 void Board::reset(){
     for(size_t i = 0; i < grid.size(); i++){
         for(size_t j = 0; j < grid[i].size(); j++){
-            removePiece({i,j});
+            if(!grid[i][j]->isEmpty()){
+                grid[i][j]->piece = nullptr;
+            }
         }
     }
+    while(currentPieces.size() > 0) currentPieces.pop_back();
 }
 
 bool Board::isStaleMate(Colour turn) const{

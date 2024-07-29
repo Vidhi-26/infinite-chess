@@ -9,41 +9,33 @@
 // To verify that king is in check, pass true. Otherwise, false to doesVerifyCheck. Als pass colour of king.
 // To check if the condition is satsified, it "simulates" a move on the board, 
 // verifies for the condition and then undos it.
-std::vector<Move> MoveSimulator::simulateMove(std::vector<Move> allMoves, Board& board, Colour colour, bool doesVerifyCheck) {
-    std::vector<Move> validMoves;
-
-    for (const auto& mv : allMoves) {
-        // Below fields track pawn promotion
-        std::pair<Piece*, Piece*> capturedAndOriginalPawn;
-        std::unique_ptr<Piece> newPawnPromotionPiece;
-        char pawnPromotion = mv.getPawnPromotion();
+MoveMetaData MoveSimulator::simulateMove(Move move, Board& board) {
+    std::pair<Piece*, Piece*> capturedAndOriginalPawn;
+    std::unique_ptr<Piece> newPawnPromotionPiece;
+    char pawnPromotion = move.getPawnPromotion();
 
         // Simulate move mv
-        if (pawnPromotion == ' ') {         // Normal case
-            capturedAndOriginalPawn.first = board.simulateMovePiece(mv);
+        if (pawnPromotion == ' ') {     // Normal case
+            capturedAndOriginalPawn.first = board.simulateMovePiece(move);
             capturedAndOriginalPawn.second = nullptr;
         } else if (pawnPromotion == 'e') {  // En passant case
             capturedAndOriginalPawn.first = nullptr;
-            capturedAndOriginalPawn.second = board.simulateMovePiece(mv, 'e');
-        } else {                            // Pawn promotion case
+            capturedAndOriginalPawn.second = board.simulateMovePiece(move, 'e');
+        } else {                        // Pawn promotion case
             newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
-            capturedAndOriginalPawn = board.simulateMovePiece(mv, newPawnPromotionPiece.get());
+            capturedAndOriginalPawn = board.simulateMovePiece(move, newPawnPromotionPiece.get());
         }
 
-        // Check if king will be in check because of move
-        if (board.isKingInCheck(colour) == doesVerifyCheck) {
-            validMoves.push_back(mv);
-        }
+        return MoveMetaData{capturedAndOriginalPawn, pawnPromotion};    
+}
 
-        // Undo simulated move mv
-        if (pawnPromotion == ' ') {         // Normal case
-            board.undoSimulatedMove(mv, capturedAndOriginalPawn.first);
-        } else if (pawnPromotion == 'e') {  // En passant case
-            board.undoSimulatedMove(mv, capturedAndOriginalPawn.second, 'e');
-        } else {                            // Pawn promotion case
-            board.undoSimulatedMove(mv, capturedAndOriginalPawn.first, capturedAndOriginalPawn.second);
-        }
+void MoveSimulator::undoMove(Move move, Board& board, MoveMetaData metaData){
+    // Undo simulated move mv
+    if (metaData.pawnPromotion == ' ') {         // Normal case
+        board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.first);
+    } else if (metaData.pawnPromotion == 'e') {  // En passant case
+        board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.second, 'e');
+    } else {                            // Pawn promotion case
+        board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.first, metaData.capturedAndOriginalPawn.second);
     }
-
-    return validMoves;
 }

@@ -65,6 +65,7 @@ int main(){
                     if (!chessGame.addPiece(piece,loc)) {
                         std::cout << "Add failed. Another already exists here!" << std::endl;
                     }
+                    chessGame.displayBoard();
                 }
                 else if(setupCmd == "-"){
                     std::string piece, loc;
@@ -72,6 +73,7 @@ int main(){
                     if (!chessGame.removePiece(loc)) {
                         std::cout << "Remove failed. No piece exists here!" << std::endl;
                     }
+                    chessGame.displayBoard();
                 }
                 else if(setupCmd == "="){
                     std::string colour;
