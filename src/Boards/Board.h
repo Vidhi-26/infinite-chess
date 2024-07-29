@@ -7,6 +7,7 @@
 #include "../Square.h"
 #include "../GameState.h"
 #include "../Subject.h"
+#include "../Moves/Move.h"
 
 class Board: public Subject {
 private:
