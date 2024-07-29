@@ -16,14 +16,19 @@ GraphicalObserver::GraphicalObserver(Board* board, int width, int height)
 
 // Overriden notify method
 void GraphicalObserver::notify() {
-    for (int i = 0; i < height; i++) {
+    int row = 0;
+    
+    for (int i = height - 1; i >= 0; i--) {
+        int col = 0;
         for (int j = 0; j < width; j++) {
             char currentState = board->getState(i, j);
             if (currentState != previousState[i][j]) {
-                renderCell(i, j, currentState);
+                renderCell(row, col, currentState);
                 previousState[i][j] = currentState;
             }
+            col++;
         }
+        row++;
     }
 }
 

@@ -82,6 +82,10 @@ void ChessGame::postMoveAction(){
     else if(curState == GameState::WHITE_IN_CHECK){
         std::cout << "White in check" << std::endl;
     }
+    displayBoard();
+}
+
+void ChessGame::displayBoard(){
     board->render();
 }
 

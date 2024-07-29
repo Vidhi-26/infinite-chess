@@ -31,6 +31,7 @@ public:
     bool addPiece(std::string piece, std::string loc);
     bool removePiece(std::string loc);
     bool isBoardConfigValid();
+    void displayBoard();
 };
 
 #endif

@@ -17,3 +17,8 @@ Colour ColourUtils::getWinner(GameState gs) {
         default: return Colour::DRAW;
     }
 }
+
+Colour ColourUtils::oppositeColour(Colour colour){
+    if(colour == Colour::BLACK) return Colour::WHITE;
+    return Colour::BLACK;
+}
