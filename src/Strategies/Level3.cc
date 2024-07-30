@@ -45,7 +45,7 @@ Move Level3::getStrategyImpl(Board& board, Colour colour) {
     if(piecesWithThreat.size() == 0) {
         std::vector<Move> possibleMoves;
         possibleMoves.push_back(Level2::getStrategyImpl(board, colour));
-        //possibleMoves.push_back(Level1::getStrategyImpl(board, colour));
+        possibleMoves.push_back(Level1::getStrategyImpl(board, colour));
         return StrategyUtils::getRandomMove(possibleMoves);
     }
     
@@ -90,7 +90,6 @@ Move Level3::getStrategyImpl(Board& board, Colour colour) {
         }
         if(safeMoves.size() > 0){
             Move selectedMove = StrategyUtils::getRandomMove(safeMoves);
-            std::cout<<"Level 3 move: "<<selectedMove.oldPos.first<<" "<<selectedMove.oldPos.second<<" "<<selectedMove.newPos.first<<" "<<selectedMove.newPos.second<<std::endl;
             return selectedMove;
         }
     }

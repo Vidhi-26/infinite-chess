@@ -4,8 +4,8 @@
 class Move;
 
 class Level3: public Level2 {
-private:
-    Move getStrategyImpl(Board&, Colour) override;
+protected:
+    virtual Move getStrategyImpl(Board&, Colour) override;
 
 public:
     Level3();

@@ -53,6 +53,7 @@
         "cstring": "cpp",
         "thread": "cpp",
         "chrono": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "unordered_set": "cpp"
     }
 }

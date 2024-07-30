@@ -12,6 +12,7 @@
 #include "./Strategies/Level2.h"
 #include "./Strategies/Level3.h"
 #include "./Strategies/Level4.h"
+#include "./Strategies/Level5.h"
 #include <unordered_set>
 
 // Constructor
@@ -33,8 +34,11 @@ std::unique_ptr<Strategy> ChessGame::createStrategy(int level){
     else if(level == 4){
         return std::make_unique<Level4>();
     }
+    else if(level == 5){
+        return std::make_unique<Level5>();
+    }
     else{
-        throw std::runtime_error("Specify computer level to be in [1-4]");
+        throw std::runtime_error("Specify computer level to be in [1-5]");
     }
 }
 
@@ -80,8 +84,7 @@ void ChessGame::postMoveAction(Move playedMove){
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
         displayBoard();
         scoreboard->updateScores(ColourUtils::getWinner(curState));
-        board->reset();
-        std::cout<<"Game over!\n";
+        endGame();
         return;
     }
     else if(curState == GameState::BLACK_IN_CHECK){
@@ -178,6 +181,13 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
     }
 }
 
+void ChessGame::endGame(){
+    board->reset();
+    std::cout<<"Game over!\n";
+    while(players.size() > 0) players.pop_back();
+    while(strategies.size() > 0) strategies.pop_back();
+}
+
 void ChessGame::movePiece(){
     try{
         Move playedMove;
@@ -199,8 +209,7 @@ void ChessGame::movePiece(){
 void ChessGame::acceptResignation() {
     Colour winner = turn == Colour::BLACK ? Colour::WHITE : Colour::BLACK;
     scoreboard->updateScores(winner);
-    board->reset();
-    std::cout<<"Game over!\n";
+    endGame();
 }
 
 // Method to set the turn
@@ -245,4 +254,17 @@ void ChessGame::undo() {
     }
 
     postMoveAction();
+}
+
+bool ChessGame::isGameRunning() const{
+    return board->getGameState() != GameState::SETUP;
+}
+
+void ChessGame::help(std::string loc){
+    auto processedLoc = getLocation(loc);
+    if(board->isEmptyPosition(processedLoc.first, processedLoc.second)){
+        std::cout<<"Specify a location that has a piece"<<std::endl;
+        return;
+    }
+    board->displayPossibleMoves(processedLoc);
 }

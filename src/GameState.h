@@ -7,7 +7,8 @@ enum class GameState {
     DRAW,
     IN_PROGRESS,
     WHITE_IN_CHECK,
-    BLACK_IN_CHECK
+    BLACK_IN_CHECK,
+    SETUP
 };
 
 #endif

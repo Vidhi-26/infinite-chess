@@ -20,6 +20,7 @@ private:
     std::unique_ptr<Strategy> createStrategy(int level);
     void postMoveAction(Move = Move());
     void createPlayer(std::string, Colour);
+    void endGame();
 public:
     ChessGame();
     virtual ~ChessGame() = default;
@@ -33,6 +34,8 @@ public:
     bool isBoardConfigValid();
     void displayBoard();
     void undo();
+    bool isGameRunning() const;
+    void help(std::string);
 };
 
 #endif

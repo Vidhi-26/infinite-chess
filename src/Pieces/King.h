@@ -8,7 +8,7 @@ private:
     std::vector<Move> getPossibleMovesImpl() const override;
     char getCodeImpl() const override;
 public:
-    King(Colour, Board&, int points = INT_MAX);
+    King(Colour, Board&, int points = 1000);
     virtual ~King() = default;
 
     std::pair<int, int> getInitialPosition() const;

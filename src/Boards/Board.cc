@@ -15,6 +15,7 @@ Board::Board(int rowSize, int colSize) : grid(rowSize) {
             row.push_back(std::make_unique<Square>());
         }
     }
+    gameState = GameState::SETUP;
 }
 
 std::pair<int, int> Board::getPositionOfPiece(const Piece& piece) const {
@@ -66,6 +67,7 @@ void Board::addPiece(std::unique_ptr<Piece> piece, std::pair<int,int> loc){
 }
 
 void Board::removePiece(std::pair<int, int> loc){
+    if(isEmptyPosition(loc.first, loc.second)) return;
     Piece& piece = getPieceAt(loc.first, loc.second);
     for(auto it = currentPieces.begin(); it != currentPieces.end(); ++it){
         if((*it).get() == &piece){
@@ -107,6 +109,7 @@ void Board::reset(){
         }
     }
     while(currentPieces.size() > 0) currentPieces.pop_back();
+    gameState = GameState::SETUP;
 }
 
 bool Board::isStaleMate(Colour turn) const{
@@ -372,4 +375,10 @@ char Board::getState(int row, int col) const{
         return code - 32;
     }
     return code; 
+}
+
+void Board::displayPossibleMoves(std::pair<int,int> pieceLocation){
+    movesToDisplay = getPieceAt(pieceLocation.first, pieceLocation.second).getPossibleMoves();
+    std::cout<<pieceLocation.first<<" "<<pieceLocation.second<<"\n";
+    render();
 }

@@ -44,4 +44,5 @@ void MoveSimulator::undoMove(Move move, Board& board, MoveMetaData metaData){
     } else {                                     // Pawn promotion case
         board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.first, metaData.capturedAndOriginalPawn.second);
     }
+    // /board.render();
 }

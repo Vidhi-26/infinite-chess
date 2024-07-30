@@ -5,7 +5,6 @@
 int main(){
     ChessGame chessGame;
     std::string command;
-
     while (std::cin >> command) {
         if (command == "game" ) {
             std::string whitePlayer, blackPlayer;
@@ -59,39 +58,50 @@ int main(){
         }
 
         else if(command == "setup"){
-            std::string setupCmd;
-            while(std::cin>>setupCmd){
-                if(setupCmd == "+"){
-                    std::string piece, loc;
-                    std::cin>>piece>>loc;
-                    if (!chessGame.addPiece(piece,loc)) {
-                        std::cout << "Add failed. Another already exists here!" << std::endl;
+            if(chessGame.isGameRunning()){
+                std::cout<<"Game is still running! Can't enter setup mode"<<std::endl;
+            }
+            else{
+                std::string setupCmd;
+                while(std::cin>>setupCmd){
+                    if(setupCmd == "+"){
+                        std::string piece, loc;
+                        std::cin>>piece>>loc;
+                        if (!chessGame.addPiece(piece,loc)) {
+                            std::cout << "Add failed. Another already exists here!" << std::endl;
+                        }
+                        chessGame.displayBoard();
                     }
-                    chessGame.displayBoard();
-                }
-                else if(setupCmd == "-"){
-                    std::string loc;
-                    std::cin>>loc;
-                    if (!chessGame.removePiece(loc)) {
-                        std::cout << "Remove failed. No piece exists here!" << std::endl;
+                    else if(setupCmd == "-"){
+                        std::string loc;
+                        std::cin>>loc;
+                        if (!chessGame.removePiece(loc)) {
+                            std::cout << "Remove failed. No piece exists here!" << std::endl;
+                        }
+                        chessGame.displayBoard();
                     }
-                    chessGame.displayBoard();
-                }
-                else if(setupCmd == "="){
-                    std::string colour;
-                    std::cin>>colour;
-                    chessGame.setTurn(colour);
-                }
-                else if(setupCmd == "done"){
-                    if(chessGame.isBoardConfigValid()) break;
+                    else if(setupCmd == "="){
+                        std::string colour;
+                        std::cin>>colour;
+                        chessGame.setTurn(colour);
+                    }
+                    else if(setupCmd == "done"){
+                        if(chessGame.isBoardConfigValid()) break;
+                        else{
+                            std::cout<<"Setup Failed!"<<std::endl;
+                        }
+                    }
                     else{
-                        std::cout<<"Setup Failed!"<<std::endl;
+                        std::cout<<"Wrong setup command. Try again!"<<std::endl;
                     }
-                }
-                else{
-                    std::cout<<"Wrong setup command. Try again!"<<std::endl;
                 }
             }
+            
+        }
+        else if(command == "help"){
+            std::string loc;
+            std::cin>>loc;
+            chessGame.help(loc);
         }
         else{
             std::cout<<"Wrong command. Try again!"<<std::endl;
