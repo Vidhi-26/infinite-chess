@@ -87,6 +87,7 @@ std::string getLocationString(const std::pair<int, int>& loc) {
 void Board::undo() {
     if (moveHistory.empty()) {
         std::cout << "Invalid undo! No move has been made yet" << std::endl;
+        return;
     }
 
     auto prevMove = moveHistory.top();
