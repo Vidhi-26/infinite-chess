@@ -7,12 +7,14 @@
 #include <unordered_map>
 #include <climits>
 #include "../ColourUtils.h"
+#include "../Moves/MoveSimulator.h"
+#include <iostream>
 
 Level4::Level4() {}
 
 std::vector<Move> getAllLegalMoves(Board& board, Colour colour) {
     std::vector<Move> legalMoves;
-    for(auto it = board.begin(); it != board.end(); ++it){
+    for(auto it = board.cbegin(); it != board.cend(); ++it){
         if((*it).isEmpty()) continue;
         auto piece = (*it).piece;
         if (piece->getColour() == colour) {
@@ -26,7 +28,7 @@ std::vector<Move> getAllLegalMoves(Board& board, Colour colour) {
 
 int evaluateBoard(const Board& board, Colour colour) {
     int score = 0;
-    for(auto it = board.cend(); it != board.cend(); ++it) {
+    for(auto it = board.cbegin(); it != board.cend(); ++it) {
         if((*it).isEmpty()) continue;
         auto piece = (*it).piece;
         if (piece->getColour() == colour) {
@@ -39,18 +41,19 @@ int evaluateBoard(const Board& board, Colour colour) {
 }
 
 int minimax(Board& board, int depth, bool isMaximizingPlayer, Colour colour, int alpha, int beta) {
-    if (depth == 0) {
+   
+    if (depth == 0 || board.isCheckMate(colour) || board.isCheckMate(ColourUtils::oppositeColour(colour))) {
         return evaluateBoard(board, colour);
     }
-
+     std::cout<<"Depth:"<<depth<<" "<<ColourUtils::toString(colour)<<"\n";
     std::vector<Move> legalMoves = getAllLegalMoves(board, colour);
 
     if (isMaximizingPlayer) {
         int maxEval = INT_MIN;
         for (const auto& move : legalMoves) {
-            Piece* capturedPiece = board.simulateMovePiece(move);
+            auto metadata = MoveSimulator::simulateMove(move, board);
             int eval = minimax(board, depth - 1, false, ColourUtils::oppositeColour(colour), alpha, beta);
-            board.undoSimulatedMove(move, capturedPiece);
+            MoveSimulator::undoMove(move, board, metadata);
             maxEval = std::max(maxEval, eval);
             alpha = std::max(alpha, eval);
             if (beta <= alpha) {
@@ -61,9 +64,9 @@ int minimax(Board& board, int depth, bool isMaximizingPlayer, Colour colour, int
     } else {
         int minEval = INT_MAX;
         for (const auto& move : legalMoves) {
-            Piece* capturedPiece = board.simulateMovePiece(move);
+            auto metadata = MoveSimulator::simulateMove(move, board);
             int eval = minimax(board, depth - 1, true, ColourUtils::oppositeColour(colour), alpha, beta);
-            board.undoSimulatedMove(move, capturedPiece);
+            MoveSimulator::undoMove(move, board, metadata);
             minEval = std::min(minEval, eval);
             beta = std::min(beta, eval);
             if (beta <= alpha) {
@@ -80,11 +83,11 @@ Move Level4::getStrategyImpl(Board& board, Colour colour) {
     std::vector<Move> legalMoves = getAllLegalMoves(board, colour); 
 
     for (const auto& move : legalMoves) {
-        Piece* capturedPiece = board.simulateMovePiece(move);
+        auto metadata = MoveSimulator::simulateMove(move, board);
 
         //Depth 3
         int moveValue = minimax(board, 3, false, ColourUtils::oppositeColour(colour), INT_MIN, INT_MAX);
-        board.undoSimulatedMove(move, capturedPiece);
+        MoveSimulator::undoMove(move, board, metadata);
 
         if (moveValue > bestValue) {
             bestValue = moveValue;

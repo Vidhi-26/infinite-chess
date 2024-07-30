@@ -73,8 +73,7 @@ void ChessGame::postMoveAction(Move playedMove){
     GameState curState = board->getGameState();
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
         scoreboard->updateScores(ColourUtils::getWinner(curState));
-        board->reset();
-        std::cout<<"Game over!\n";
+        endGame();
         return;
     }
     else if(curState == GameState::BLACK_IN_CHECK){
@@ -153,6 +152,13 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
     }
 }
 
+void ChessGame::endGame(){
+    board->reset();
+    std::cout<<"Game over!\n";
+    while(players.size() > 0) players.pop_back();
+    while(strategies.size() > 0) players.pop_back();
+}
+
 void ChessGame::movePiece(){
     try{
         Move playedMove;
@@ -174,8 +180,7 @@ void ChessGame::movePiece(){
 void ChessGame::acceptResignation() {
     Colour winner = turn == Colour::BLACK ? Colour::WHITE : Colour::BLACK;
     scoreboard->updateScores(winner);
-    board->reset();
-    std::cout<<"Game over!\n";
+    endGame();
 }
 
 // Method to set the turn
@@ -209,4 +214,8 @@ bool ChessGame::removePiece(std::string loc) {
 // Method to check if the board configuration is valid
 bool ChessGame::isBoardConfigValid() {
     return board->isValidConfig();
+}
+
+bool ChessGame::isGameRunning() const{
+    return board->getGameState() != GameState::SETUP;
 }

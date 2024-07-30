@@ -14,6 +14,7 @@ Board::Board(int rowSize, int colSize) : grid(rowSize) {
             row.push_back(std::make_unique<Square>());
         }
     }
+    gameState = GameState::SETUP;
 }
 
 std::pair<int, int> Board::getPositionOfPiece(const Piece& piece) const {
@@ -84,6 +85,7 @@ void Board::reset(){
         }
     }
     while(currentPieces.size() > 0) currentPieces.pop_back();
+    gameState = GameState::SETUP;
 }
 
 bool Board::isStaleMate(Colour turn) const{
