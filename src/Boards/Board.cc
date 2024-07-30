@@ -109,6 +109,9 @@ void Board::reset(){
             }
         }
     }
+    while(moveHistory.size() > 0) moveHistory.pop();
+    while(metadataHistory.size() > 0) metadataHistory.pop();
+    lastMove = Move();
     while(currentPieces.size() > 0) currentPieces.pop_back();
     gameState = GameState::SETUP;
 }

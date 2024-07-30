@@ -338,3 +338,7 @@ bool ChessGame::isValidLocation(std::string loc) const {
     }
     return true;
 }
+
+bool ChessGame::isGameStateInCheck(){
+    return board->getGameState() == GameState::BLACK_IN_CHECK || board->getGameState() == GameState::WHITE_IN_CHECK;
+}

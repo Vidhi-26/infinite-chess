@@ -39,6 +39,7 @@ public:
     void setInProgress();
     void help(std::string);
     bool isValidLocation(std::string loc) const;
+    bool isGameStateInCheck();
 };
 
 #endif

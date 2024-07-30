@@ -12,7 +12,7 @@ int main(){
     while (std::cin >> command) {
         if (command == "game") {
             // Can start game only from setup state
-            if(!chessGame.isBoardConfigValid() || chessGame.isInProgress()) {
+            if(!chessGame.isBoardConfigValid() || chessGame.isInProgress() || chessGame.isGameStateInCheck()) {
                 std::cout<<"Board must be in setup stage before playing :)"<<std::endl;
             } else {
                 std::string whitePlayer, blackPlayer;
@@ -29,21 +29,21 @@ int main(){
             }
         } else if(command == "resign") {
             // Can resign only if game is in progress state
-            if(!chessGame.isInProgress()){
+            if(!(chessGame.isInProgress() || chessGame.isGameStateInCheck())){
                 std::cout<<"Invalid command! Game is not running"<<std::endl;
             } else {
                 chessGame.acceptResignation();
             }
         } else if (command == "undo") {
             // Can undo only if game is in progress state
-            if(!chessGame.isInProgress()){
+            if(!(chessGame.isInProgress() || chessGame.isGameStateInCheck())){
                 std::cout<<"Invalid command! Game is not running"<<std::endl;
             } else {
                 chessGame.undo();
             }
         } else if(command == "move") {
             // Can move only if game is in progress state
-            if(!chessGame.isInProgress()){
+            if(!(chessGame.isInProgress() || chessGame.isGameStateInCheck())){
                 std::cout<<"Invalid command! Game is not running"<<std::endl;
             } else {
                 std::string loc1, loc2;
@@ -137,7 +137,7 @@ int main(){
             }
         } else if (command == "help") {
             // Can only ask for help if game is not in progress
-            if(!chessGame.isInProgress()){
+            if(!(chessGame.isInProgress() || chessGame.isGameStateInCheck())){
                 std::cout<<"Invalid command! Game is not running"<<std::endl;
             } else {
                 // Show possible moves from loc
