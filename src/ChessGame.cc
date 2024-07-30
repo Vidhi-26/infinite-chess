@@ -110,9 +110,7 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
     if(pawnPromotion != ' '){
         // Input validation for pawn promotion
         std::unordered_set<char> validPromotions{'q', 'r', 'b', 'n'};
-        if (pawnPromotion == 'e') {
-            // This is valid check for en passante
-        } else if (turn == Colour::WHITE) {
+        if (turn == Colour::WHITE) {
             if (!isupper(pawnPromotion) || validPromotions.find(tolower(pawnPromotion)) == validPromotions.end()) {
                 std::cout << "Invalid input. Cannot promote to " << pawnPromotion << std::endl;
                 return;
@@ -127,18 +125,28 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
         // Check if pawn promotion applies to requested move
         Piece& piece = board->getPieceAt(newMove.oldPos.first, newMove.oldPos.second);
         if (dynamic_cast<const Pawn*>(&piece) == nullptr) {     // Not a pawn
-            std::cout << "Pawn promotion or en passant does not apply. Try again!" << std::endl;
+            std::cout << "Pawn promotion does not apply. Try again!" << std::endl;
             return;
         }
 
         bool isValidPawnMove = (turn == Colour::WHITE && newMove.oldPos.first == 6 && newMove.newPos.first == 7) ||
                                (turn == Colour::BLACK && newMove.oldPos.first == 1 && newMove.newPos.first == 0);
-        if (pawnPromotion != 'e' && !isValidPawnMove) {
+        if (!isValidPawnMove) {
             std::cout << "Pawn promotion does not apply. Try again!" << std::endl;
             return;
         }
 
         newMove.addPawnPromotion(pawnPromotion);
+    }
+
+    // Handle en passante
+    Piece& piece = board->getPieceAt(newMove.oldPos.first, newMove.oldPos.second);
+    int nr = newMove.newPos.first, nc = newMove.newPos.second;
+    int r = newMove.oldPos.first, c = newMove.oldPos.second;
+    int direction = turn == Colour::WHITE ? 1 : -1;
+    if (dynamic_cast<const Pawn*>(&piece) != nullptr && board->isEmptyPosition(nr, nc) &&
+        nr == r + direction && (nc == c + 1 || nc == c - 1)) {
+        newMove.addPawnPromotion('e');
     }
 
     try{
