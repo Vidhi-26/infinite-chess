@@ -23,9 +23,6 @@ private:
 
 public:
     Move lastMove;
-    // Helper methods to detect checkmate and stalemate situations
-    bool isCheckMate(Colour) const;
-    bool isStaleMate(Colour) const;
     // Board ctor and methods to add, remove, move pieces on board
     Board(int rowSize = 8, int colSize = 8);
     void addPiece(std::unique_ptr<Piece>, std::pair<int,int>);

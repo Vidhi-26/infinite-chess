@@ -66,6 +66,7 @@ void Board::addPiece(std::unique_ptr<Piece> piece, std::pair<int,int> loc){
 }
 
 void Board::removePiece(std::pair<int, int> loc){
+    if(isEmptyPosition(loc.first, loc.second)) return;
     Piece& piece = getPieceAt(loc.first, loc.second);
     for(auto it = currentPieces.begin(); it != currentPieces.end(); ++it){
         if((*it).get() == &piece){

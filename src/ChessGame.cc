@@ -158,7 +158,7 @@ void ChessGame::endGame(){
     board->reset();
     std::cout<<"Game over!\n";
     while(players.size() > 0) players.pop_back();
-    while(strategies.size() > 0) players.pop_back();
+    while(strategies.size() > 0) strategies.pop_back();
 }
 
 void ChessGame::movePiece(){

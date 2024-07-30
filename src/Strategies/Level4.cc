@@ -42,10 +42,10 @@ int evaluateBoard(const Board& board, Colour colour) {
 
 int minimax(Board& board, int depth, bool isMaximizingPlayer, Colour colour, int alpha, int beta) {
    
-    if (depth == 0 || board.isCheckMate(colour) || board.isCheckMate(ColourUtils::oppositeColour(colour))) {
+    if (depth == 0) {
         return evaluateBoard(board, colour);
     }
-     std::cout<<"Depth:"<<depth<<" "<<ColourUtils::toString(colour)<<"\n";
+    std::cout<<"Depth:"<<depth<<" "<<ColourUtils::toString(colour)<<"\n";
     std::vector<Move> legalMoves = getAllLegalMoves(board, colour);
 
     if (isMaximizingPlayer) {

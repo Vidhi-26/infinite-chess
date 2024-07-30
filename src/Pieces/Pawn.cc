@@ -56,6 +56,7 @@ std::vector<Move> Pawn::getPossibleMovesImpl() const {
             Move lastMove = board.lastMove;
             if (lastMove.oldPos.first == r + 2 * direction && lastMove.newPos.first == r && 
                 lastMove.newPos.second == c + colDir && 
+                !board.isEmptyPosition(lastMove.newPos.first, lastMove.newPos.second) &&
                 dynamic_cast<Pawn*>(&board.getPieceAt(lastMove.newPos.first, lastMove.newPos.second)) != nullptr) {
                 possibleMoves.emplace_back(r, c, nr, nc, 'e');
             }
