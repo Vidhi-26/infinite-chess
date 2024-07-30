@@ -5,6 +5,7 @@
 class SimpleScoreBoard : public ScoreBoard {
 private:
     void updateScoresImpl(Colour);
+    void updateScoresImpl(Colour, double);
 
 public:
     SimpleScoreBoard();

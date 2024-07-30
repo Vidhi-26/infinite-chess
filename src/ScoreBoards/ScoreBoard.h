@@ -6,9 +6,10 @@
 class ScoreBoard {
 private:
     virtual void updateScoresImpl(Colour) = 0;
+    virtual void updateScoresImpl(Colour, double) = 0;
 
 protected:
-    std::unordered_map<Colour, int> scores;
+    std::unordered_map<Colour, double> scores;
 
 public:
     ScoreBoard();

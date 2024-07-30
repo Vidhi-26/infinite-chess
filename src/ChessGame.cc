@@ -72,6 +72,7 @@ void ChessGame::postMoveAction(Move playedMove){
     board->updateGameState(turn);
     GameState curState = board->getGameState();
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
+        displayBoard();
         scoreboard->updateScores(ColourUtils::getWinner(curState));
         board->reset();
         std::cout<<"Game over!\n";
