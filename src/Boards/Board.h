@@ -50,6 +50,7 @@ public:
 
     // Setter and getter for game state and move history
     GameState getGameState() const;
+    void setGameInProgress();
     void updateGameState(Colour);
     std::stack<Move> getMoveHistory() const;
     void addToMoveHistory(Move, MoveMetaData);

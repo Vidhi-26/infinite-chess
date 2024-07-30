@@ -231,6 +231,10 @@ GameState Board::getGameState() const{
     return gameState;
 }
 
+void Board::setGameInProgress() {
+    gameState = GameState::IN_PROGRESS;
+}
+
 void Board::updateGameState(Colour turn){
     bool blackKingCheck = isKingInCheck(Colour::BLACK);
     bool whiteKingCheck = isKingInCheck(Colour::WHITE);
