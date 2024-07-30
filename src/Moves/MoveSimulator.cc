@@ -23,7 +23,7 @@ MoveMetaData MoveSimulator::simulateMove(Move move, Board& board) {
             capturedAndOriginalPawn.second = board.simulateMovePiece(move, 'e');
         } else {                        // Pawn promotion case
             newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
-            capturedAndOriginalPawn = board.simulateMovePiece(move, newPawnPromotionPiece.get());
+            capturedAndOriginalPawn = board.simulateMovePiece(move, std::move(newPawnPromotionPiece));
         }
 
         return MoveMetaData{capturedAndOriginalPawn, pawnPromotion};    

@@ -229,12 +229,15 @@ Piece* Board::simulateMovePiece(const Move& move) {
     return capturedPiece;
 }
 
-std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, Piece* newPawnPromotionPiece) {
+std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, std::unique_ptr<Piece> newPawnPromotionPiece) {
     //std::cout<<"In simulate move piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     Piece* capturedPiece = grid[move.newPos.first][move.newPos.second]->piece;
     Piece* originalPawnPiece = grid[move.oldPos.first][move.oldPos.second]->piece;
-    grid[move.newPos.first][move.newPos.second]->piece = newPawnPromotionPiece;
+    grid[move.newPos.first][move.newPos.second]->piece = newPawnPromotionPiece.get();
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
+
+    simulatedPawnPromotions.push_back(std::move(newPawnPromotionPiece));
+
     return {capturedPiece, originalPawnPiece};
 }
 
@@ -260,6 +263,13 @@ void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
 
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece, Piece* originalPawnPiece) {
     //std::cout<<"In simulate undo piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
+    for(auto it = simulatedPawnPromotions.begin(); it != simulatedPawnPromotions.end(); ++it){
+        if((*it).get() == grid[move.oldPos.first][move.oldPos.second]->piece){
+            simulatedPawnPromotions.erase(it);
+            break;
+        }
+    }
+
     grid[move.oldPos.first][move.oldPos.second]->piece = originalPawnPiece;
     grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
 }
