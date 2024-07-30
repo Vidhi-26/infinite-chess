@@ -269,13 +269,11 @@ void Board::addToMoveHistory(Move move, MoveMetaData metadata) {
 
 // Move simulations
 void Board::movePiece(const Move& move) {
-    //std::cout<<"In move piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
 }
 
 Piece* Board::simulateMovePiece(const Move& move) {
-    //std::cout<<"In simulate move piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     Piece* capturedPiece = grid[move.newPos.first][move.newPos.second]->piece;
     grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
@@ -283,7 +281,6 @@ Piece* Board::simulateMovePiece(const Move& move) {
 }
 
 std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, std::unique_ptr<Piece> newPawnPromotionPiece) {
-    //std::cout<<"In simulate move piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     Piece* capturedPiece = grid[move.newPos.first][move.newPos.second]->piece;
     Piece* originalPawnPiece = grid[move.oldPos.first][move.oldPos.second]->piece;
     grid[move.newPos.first][move.newPos.second]->piece = newPawnPromotionPiece.get();
@@ -333,13 +330,11 @@ void Board::undoSimulatedMove(const Move& move) {
 }
 
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
-    //std::cout<<"In simulate undo piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.oldPos.first][move.oldPos.second]->piece = grid[move.newPos.first][move.newPos.second]->piece;
     grid[move.newPos.first][move.newPos.second]->piece = capturedPiece;
 }
 
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece, Piece* originalPawnPiece) {
-    // std::cout<<"In simulate undo piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     for(auto it = currentPieces.begin(); it != currentPieces.end(); ++it){
         if((*it).get() == grid[move.newPos.first][move.newPos.second]->piece){
             currentPieces.erase(it);
@@ -379,6 +374,5 @@ char Board::getState(int row, int col) const{
 
 void Board::displayPossibleMoves(std::pair<int,int> pieceLocation){
     movesToDisplay = getPieceAt(pieceLocation.first, pieceLocation.second).getPossibleMoves();
-    std::cout<<pieceLocation.first<<" "<<pieceLocation.second<<"\n";
     render();
 }

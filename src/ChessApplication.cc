@@ -58,6 +58,7 @@ int main(){
         }
 
         else if(command == "setup"){
+            chessGame.displayBoard();
             if(chessGame.isGameRunning()){
                 std::cout<<"Game is still running! Can't enter setup mode"<<std::endl;
             }
@@ -102,6 +103,9 @@ int main(){
             std::string loc;
             std::cin>>loc;
             chessGame.help(loc);
+        }
+        else if(command == "quit"){
+            break;
         }
         else{
             std::cout<<"Wrong command. Try again!"<<std::endl;

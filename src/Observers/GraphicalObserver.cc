@@ -6,7 +6,7 @@
 // Ctor: Initialize window to 10c and 10r
 // Set the studio field (subject)
 GraphicalObserver::GraphicalObserver(Board* board, int width, int height)
-    : width{width}, height{height}, board{board}, window{100 * width, 100 * height} {
+    : width{width}, height{height}, board{board}, window{105 * width, 105 * height} {
     
     // Attach the observer to the subject
     board->attach(this); 
@@ -14,7 +14,7 @@ GraphicalObserver::GraphicalObserver(Board* board, int width, int height)
     this->previousState.resize(height, std::vector<char>(width, '*'));
 }
 
-// Overriden notify method
+// Overridden notify method
 void GraphicalObserver::notify() {
     int row = 0;
     
@@ -35,15 +35,14 @@ void GraphicalObserver::notify() {
     if(board->movesToDisplay.size() > 0){
         for(int i = 0; i < board->movesToDisplay.size(); i++){
             auto newLoc = board->movesToDisplay[i].newPos;
-            std::cout<<newLoc.first<<" "<<newLoc.second<<"\n";
             highlightCell(height - newLoc.first - 1, newLoc.second);
             previousState[newLoc.first][newLoc.second] = '.';
         }
         board->movesToDisplay.clear();
         board->movesToDisplay.resize(0);
     }
-    
 
+    drawLabels();
 }
 
 void GraphicalObserver::highlightCell(int row, int col) {
@@ -84,6 +83,19 @@ void GraphicalObserver::renderCell(int row, int col, char state) {
     }
 }
 
+void GraphicalObserver::drawLabels() {
+    // Draw column labels (a, b, c, ...)
+    for (int col = 0; col < width; col++) {
+        char label = 'a' + col;
+        window.drawString(100 * col + 45, 100 * height + 25, std::string(1, label), window.Black);
+    }
+
+     // Draw row labels (1, 2, 3, ...)
+    for (int row = 0; row < height; row++) {
+        char label = '1' + row;
+        window.drawString(100 * width + 10, 100 * (height - row - 1) + 55, std::string(1, label), window.Black);
+    }
+}
 
 // Dtor: Observer is removed from the subject
 GraphicalObserver::~GraphicalObserver() {

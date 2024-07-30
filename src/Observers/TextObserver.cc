@@ -14,15 +14,16 @@ TextObserver::TextObserver(Board* board, int width, int height)
 //Overriden notify method 
 void TextObserver::notify(){
     for(int i = height - 1; i >= 0; i--) {
-         std::cout << i + 1 << " ";
+         std::cout << " ";
         for (int j = 0; j < width; j++) {
             std::cout << board->getState(i, j);
         }
+        std::cout << " "<<i + 1;
         std::cout << std::endl;
     }
 
     std::cout << std::endl;
-    std::cout << "  ";
+    std::cout << " ";
     
     for (char c = 'a'; c < 'a' + width; c++) {
         std::cout << c;

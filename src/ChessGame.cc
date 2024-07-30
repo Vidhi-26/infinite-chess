@@ -19,6 +19,7 @@
 ChessGame::ChessGame() : board(std::make_unique<Board>()), scoreboard(std::make_unique<SimpleScoreBoard>()){
     textObserver = std::move(std::make_unique<TextObserver>(board.get()));
     graphicalObserver = std::move(std::make_unique<GraphicalObserver>(board.get()));
+    turn = Colour::WHITE;
 }
 
 std::unique_ptr<Strategy> ChessGame::createStrategy(int level){
@@ -63,13 +64,29 @@ void ChessGame::createPlayer(std::string player, Colour colour){
 void ChessGame::addPlayers(std::string whitePlayer, std::string blackPlayer){
     createPlayer(whitePlayer, Colour::WHITE);
     createPlayer(blackPlayer, Colour::BLACK);
-    turn = Colour::WHITE;
 }
 
 std::pair<int,int> getLocation(std::string loc){
     return {loc[1] - '1', loc[0] - 'a'};
 }
 
+void displayMessage(GameState gameState){
+    if(gameState == GameState::BLACK_WINS){
+        std::cout << "Checkmate! Black wins!" << std::endl;
+    }
+    else if(gameState == GameState::WHITE_WINS){
+        std::cout << "Checkmate! White wins!" << std::endl;
+    }
+    else if(gameState == GameState::BLACK_IN_CHECK){
+        std::cout << "Black is in check." << std::endl;
+    }
+    else if(gameState == GameState::WHITE_IN_CHECK){
+        std::cout << "White is in check." << std::endl;
+    }
+    else if(gameState == GameState::DRAW){
+        std::cout << "Stalemate!" << std::endl;
+    }
+}
 void ChessGame::postMoveAction(Move playedMove){
     turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
 
@@ -81,19 +98,13 @@ void ChessGame::postMoveAction(Move playedMove){
     
     board->updateGameState(turn);
     GameState curState = board->getGameState();
+    displayMessage(curState);
+    displayBoard();
+    
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
-        displayBoard();
         scoreboard->updateScores(ColourUtils::getWinner(curState));
         endGame();
-        return;
     }
-    else if(curState == GameState::BLACK_IN_CHECK){
-        std::cout << "Black in check" << std::endl;
-    }
-    else if(curState == GameState::WHITE_IN_CHECK){
-        std::cout << "White in check" << std::endl;
-    }
-    displayBoard();
 }
 
 void ChessGame::displayBoard(){
@@ -109,7 +120,7 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
 
     // Input validation
     if (board->isEmptyPosition(newMove.oldPos.first, newMove.oldPos.second)){
-        std::cout<<"No piece exists there"<<std::endl;
+        std::cout<<"No piece exists there!"<<std::endl;
         return;
     } else if (turn != board->getPieceAt(newMove.oldPos.first, newMove.oldPos.second).getColour()) {
         std::cout<<"It is not your turn! Pass to next player" << std::endl;
@@ -127,7 +138,7 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
             }
         } else if (turn == Colour::BLACK) {
             if (validPromotions.find(tolower(pawnPromotion)) == validPromotions.end()) {
-                std::cout << "Inavlid input. Cannot promote to " << pawnPromotion << std::endl;
+                std::cout << "Invalid input. Cannot promote to " << pawnPromotion << std::endl;
                 return;
             }
         }
@@ -183,19 +194,17 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
 
 void ChessGame::endGame(){
     board->reset();
-    std::cout<<"Game over!\n";
     while(players.size() > 0) players.pop_back();
     while(strategies.size() > 0) strategies.pop_back();
+    turn = Colour::WHITE;
 }
 
 void ChessGame::movePiece(){
     try{
         Move playedMove;
         if(turn == Colour::WHITE){
-            std::cout<<"white's move\n";
             playedMove = players[0]->playTurn();
         } else {
-            std::cout<<"black's move\n";
             playedMove = players[1]->playTurn();
         }
         postMoveAction(playedMove);
@@ -208,13 +217,27 @@ void ChessGame::movePiece(){
 // Method to accept resignation
 void ChessGame::acceptResignation() {
     Colour winner = turn == Colour::BLACK ? Colour::WHITE : Colour::BLACK;
+    if(winner == Colour::BLACK){
+        std::cout << "Black Wins!" << std::endl;
+    }
+    else if(winner == Colour::WHITE){
+        std::cout << "White Wins!" << std::endl;
+    }
     scoreboard->updateScores(winner);
     endGame();
 }
 
 // Method to set the turn
 void ChessGame::setTurn(std::string colour) {
-    turn = (colour == "white") ? Colour::WHITE : Colour::BLACK;
+    if(colour == "white"){
+        turn = Colour::WHITE;
+    }
+    else if(colour == "black"){
+        turn = Colour::BLACK;
+    }
+    else{
+        std::cout<<"Error! Invalid colour. Choose white/black only."<<std::endl;
+    }
 }
 
 // Method to add a piece to the board
@@ -263,7 +286,7 @@ bool ChessGame::isGameRunning() const{
 void ChessGame::help(std::string loc){
     auto processedLoc = getLocation(loc);
     if(board->isEmptyPosition(processedLoc.first, processedLoc.second)){
-        std::cout<<"Specify a location that has a piece"<<std::endl;
+        std::cout<<"Specify a location that has a piece!"<<std::endl;
         return;
     }
     board->displayPossibleMoves(processedLoc);
