@@ -18,7 +18,7 @@ private:
     Colour turn;
     std::vector<std::unique_ptr<Strategy>> strategies;
     std::unique_ptr<Strategy> createStrategy(int level);
-    void postMoveAction(Move);
+    void postMoveAction(Move = Move());
     void createPlayer(std::string, Colour);
 public:
     ChessGame();
@@ -32,6 +32,7 @@ public:
     bool removePiece(std::string loc);
     bool isBoardConfigValid();
     void displayBoard();
+    void undo();
 };
 
 #endif

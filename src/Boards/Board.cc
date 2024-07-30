@@ -3,6 +3,7 @@
 #include "../Moves/Move.h"
 #include "../Pieces/Pawn.h"
 #include "../GameState.h"
+#include "../Moves/MoveSimulator.h"
 #include <stdexcept>
 #include <unordered_map>
 #include <iostream>
@@ -73,6 +74,28 @@ void Board::removePiece(std::pair<int, int> loc){
         }
     }
     grid[loc.first][loc.second]->piece = nullptr;
+}
+
+std::string getLocationString(const std::pair<int, int>& loc) {
+    char file = static_cast<char>(loc.second + 'a');
+    char rank = static_cast<char>(loc.first + '1');
+    return std::string{file} + rank;
+}
+
+void Board::undo() {
+    if (moveHistory.empty()) {
+        std::cout << "Invalid undo! No move has been made yet" << std::endl;
+    }
+
+    auto prevMove = moveHistory.top();
+    moveHistory.pop();
+
+    auto prevMoveMetadata = metadataHistory.top();
+    metadataHistory.pop();
+
+    std::cout << "Undoing " << getLocationString(prevMove.oldPos) << " " << getLocationString(prevMove.newPos) << std::endl;
+
+    MoveSimulator::undoMove(prevMove, *this, prevMoveMetadata);
 }
 
 void Board::reset(){
@@ -236,8 +259,9 @@ std::stack<Move> Board::getMoveHistory() const {
     return moveHistory;
 }
 
-void Board::addToMoveHistory(Move move) {
+void Board::addToMoveHistory(Move move, MoveMetaData metadata) {
     moveHistory.push(move);
+    metadataHistory.push(metadata);
 }
 
 // Move simulations
@@ -262,7 +286,7 @@ std::pair<Piece*, Piece*> Board::simulateMovePiece(const Move& move, std::unique
     grid[move.newPos.first][move.newPos.second]->piece = newPawnPromotionPiece.get();
     grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
 
-    simulatedPawnPromotions.push_back(std::move(newPawnPromotionPiece));
+    currentPieces.push_back(std::move(newPawnPromotionPiece));
 
     return {capturedPiece, originalPawnPiece};
 }
@@ -312,10 +336,10 @@ void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
 }
 
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece, Piece* originalPawnPiece) {
-    //std::cout<<"In simulate undo piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
-    for(auto it = simulatedPawnPromotions.begin(); it != simulatedPawnPromotions.end(); ++it){
+    std::cout<<"In simulate undo piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
+    for(auto it = currentPieces.begin(); it != currentPieces.end(); ++it){
         if((*it).get() == grid[move.oldPos.first][move.oldPos.second]->piece){
-            simulatedPawnPromotions.erase(it);
+            currentPieces.erase(it);
             break;
         }
     }

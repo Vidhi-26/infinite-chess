@@ -15,7 +15,7 @@ MoveMetaData MoveSimulator::simulateMove(Move move, Board& board) {
     char pawnPromotion = move.getPawnPromotion();
 
         // Simulate move mv
-        if (pawnPromotion == ' ') {     // Normal case
+        if (pawnPromotion == ' ') {         // Normal case
             capturedAndOriginalPawn.first = board.simulateMovePiece(move);
             capturedAndOriginalPawn.second = nullptr;
         } else if (pawnPromotion == 'e') {  // En passant case
@@ -25,7 +25,7 @@ MoveMetaData MoveSimulator::simulateMove(Move move, Board& board) {
             capturedAndOriginalPawn.first = nullptr;
             capturedAndOriginalPawn.second = nullptr;
             board.simulateMovePiece(move, 'c');
-        } else {                        // Pawn promotion case
+        } else {                            // Pawn promotion case
             newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
             capturedAndOriginalPawn = board.simulateMovePiece(move, std::move(newPawnPromotionPiece));
         }

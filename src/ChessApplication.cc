@@ -15,7 +15,9 @@ int main(){
         else if(command == "resign"){
             chessGame.acceptResignation();
         }
-
+        else if (command == "undo") {
+            chessGame.undo();
+        }
         else if(command == "move"){
             std::string loc1, loc2;
             char pawnPromotion;

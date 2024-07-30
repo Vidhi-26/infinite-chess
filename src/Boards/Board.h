@@ -8,15 +8,16 @@
 #include "../GameState.h"
 #include "../Subject.h"
 #include "../Moves/Move.h"
+#include "../Moves/MoveMetaData.h"
 #include <stack>
 
 class Board: public Subject {
 private:
     std::vector<std::vector<std::unique_ptr<Square>>> grid;
     std::vector<std::unique_ptr<Piece>> currentPieces;
-    std::vector<std::unique_ptr<Piece>> simulatedPawnPromotions;
     GameState gameState;
     std::stack<Move> moveHistory; 
+    std::stack<MoveMetaData> metadataHistory;
 
     // Helper methods to detect checkmate and stalemate situations
     bool isCheckMate(Colour) const;
@@ -24,13 +25,14 @@ private:
     std::pair<int,int> kingLocation(Colour colour) const;
 
 public:
-    Move lastMove;
+    Move lastMove = Move();
 
     // Board ctor and methods to add, remove, move pieces on board
     Board(int rowSize = 8, int colSize = 8);
     void addPiece(std::unique_ptr<Piece>, std::pair<int,int>);
     void removePiece(std::pair<int, int>);
     void movePiece(const Move&);
+    void undo();
 
     // Move simulations
     Piece* simulateMovePiece(const Move&);
@@ -49,9 +51,8 @@ public:
     // Setter and getter for game state and move history
     GameState getGameState() const;
     void updateGameState(Colour);
-
     std::stack<Move> getMoveHistory() const;
-    void addToMoveHistory(Move);
+    void addToMoveHistory(Move, MoveMetaData);
 
     // Checks if a square is at a valid position and configuration of all pieces is valid
     bool isValidPosition(int, int) const;

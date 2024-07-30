@@ -68,8 +68,13 @@ std::pair<int,int> getLocation(std::string loc){
 
 void ChessGame::postMoveAction(Move playedMove){
     turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
-    board->lastMove = playedMove;
-    board->addToMoveHistory(playedMove);
+
+    if (playedMove == Move()) {
+        board->lastMove = board->getMoveHistory().empty() ? Move() : board->getMoveHistory().top();
+    } else {
+        board->lastMove = playedMove;
+    }
+    
     board->updateGameState(turn);
     GameState curState = board->getGameState();
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
@@ -229,4 +234,15 @@ bool ChessGame::removePiece(std::string loc) {
 // Method to check if the board configuration is valid
 bool ChessGame::isBoardConfigValid() {
     return board->isValidConfig();
+}
+
+//Undo move
+void ChessGame::undo() {
+    try {
+        board->undo();
+    } catch (std::runtime_error e) {
+        std::cerr << "An unknown error occurred. Forgive us!" << std::endl;
+    }
+
+    postMoveAction();
 }
