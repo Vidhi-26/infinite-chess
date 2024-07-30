@@ -137,7 +137,7 @@ bool Board::isPositionUnderAttack(int r, int c, Colour colour) const {
         for (int j = 0; j < grid[i].size(); j++) {
             if(grid[i][j]->isEmpty() || grid[i][j]->piece->getColour() == colour ||
                 dynamic_cast<King*>(grid[i][j]->piece)) continue;
-            auto enemyMoves = grid[i][j]->piece->getPossibleMoves();           
+            auto enemyMoves = grid[i][j]->piece->getPossibleMoves(true);           
             for(auto& emove: enemyMoves){
                 if(emove.newPos.first == r && emove.newPos.second == c){
                     return true;
@@ -336,9 +336,9 @@ void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
 }
 
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece, Piece* originalPawnPiece) {
-    std::cout<<"In simulate undo piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
+    // std::cout<<"In simulate undo piece with pawn "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     for(auto it = currentPieces.begin(); it != currentPieces.end(); ++it){
-        if((*it).get() == grid[move.oldPos.first][move.oldPos.second]->piece){
+        if((*it).get() == grid[move.newPos.first][move.newPos.second]->piece){
             currentPieces.erase(it);
             break;
         }
