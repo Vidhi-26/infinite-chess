@@ -96,6 +96,11 @@ int main(){
             }
             
         }
+        else if(command == "help"){
+            std::string loc;
+            std::cin>>loc;
+            chessGame.help(loc);
+        }
         else{
             std::cout<<"Wrong command. Try again!"<<std::endl;
         }

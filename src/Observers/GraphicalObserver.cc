@@ -28,7 +28,38 @@ void GraphicalObserver::notify() {
             }
             col++;
         }
+       
         row++;
+    }
+
+    if(board->movesToDisplay.size() > 0){
+        for(int i = 0; i < board->movesToDisplay.size(); i++){
+            auto newLoc = board->movesToDisplay[i].newPos;
+            std::cout<<newLoc.first<<" "<<newLoc.second<<"\n";
+            highlightCell(height - newLoc.first - 1, newLoc.second);
+            previousState[newLoc.first][newLoc.second] = '.';
+        }
+        board->movesToDisplay.clear();
+        board->movesToDisplay.resize(0);
+    }
+    
+
+}
+
+void GraphicalObserver::highlightCell(int row, int col) {
+    // Define the highlight color, e.g., yellow
+    int highlightColor = window.Yellow;
+
+    // Fill the cell with the highlight color
+    window.fillRectangle(100 * col, 100 * row, 100, 100, highlightColor);
+
+    char currentState = board->getState(height - row - 1, col);
+    // Determine the color for the piece text
+    int textColor = (currentState >= 'a' && currentState <= 'z') ? window.Green : window.Red;
+
+    // Draw the piece character if it's not an empty space
+    if (currentState != ' ' && currentState != '_') {
+        window.drawString(100 * col + 40, 100 * row + 60, std::string(1, currentState), textColor);
     }
 }
 

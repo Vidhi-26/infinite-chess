@@ -34,6 +34,7 @@ public:
     bool isBoardConfigValid();
     void displayBoard();
     bool isGameRunning() const;
+    void help(std::string);
 };
 
 #endif

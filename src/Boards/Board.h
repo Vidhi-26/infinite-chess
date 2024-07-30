@@ -55,6 +55,8 @@ public:
     void reset();
     void render();
     char getState(int, int) const;
+    void displayPossibleMoves(std::pair<int,int>);
+    std::vector<Move> movesToDisplay;
     
     // Methods to check when game might be over
     bool isKingInCheck(Colour) const;

@@ -12,6 +12,7 @@
 #include "./Strategies/Level2.h"
 #include "./Strategies/Level3.h"
 #include "./Strategies/Level4.h"
+#include "./Strategies/Level5.h"
 #include <unordered_set>
 
 // Constructor
@@ -33,8 +34,11 @@ std::unique_ptr<Strategy> ChessGame::createStrategy(int level){
     else if(level == 4){
         return std::make_unique<Level4>();
     }
+    else if(level == 5){
+        return std::make_unique<Level5>();
+    }
     else{
-        throw std::runtime_error("Specify computer level to be in [1-4]");
+        throw std::runtime_error("Specify computer level to be in [1-5]");
     }
 }
 
@@ -220,4 +224,13 @@ bool ChessGame::isBoardConfigValid() {
 
 bool ChessGame::isGameRunning() const{
     return board->getGameState() != GameState::SETUP;
+}
+
+void ChessGame::help(std::string loc){
+    auto processedLoc = getLocation(loc);
+    if(board->isEmptyPosition(processedLoc.first, processedLoc.second)){
+        std::cout<<"Specify a location that has a piece"<<std::endl;
+        return;
+    }
+    board->displayPossibleMoves(processedLoc);
 }

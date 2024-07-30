@@ -302,3 +302,9 @@ char Board::getState(int row, int col) const{
     }
     return code; 
 }
+
+void Board::displayPossibleMoves(std::pair<int,int> pieceLocation){
+    movesToDisplay = getPieceAt(pieceLocation.first, pieceLocation.second).getPossibleMoves();
+    std::cout<<pieceLocation.first<<" "<<pieceLocation.second<<"\n";
+    render();
+}

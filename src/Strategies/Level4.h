@@ -1,6 +1,5 @@
 #ifndef LEVEL4_H
 #define LEVEL4_H
-#include "Level4.h"
 #include "Level3.h"
 class Move;
 
