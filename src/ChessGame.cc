@@ -102,13 +102,21 @@ void ChessGame::displayBoard(){
 
 // Method to move a piece from loc1 to loc2
 void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion) {
+    if (loc1.length() != 2 || loc2.length() != 2) {
+        std::cout << "Invalid location! Locations should be from a1, a8 to h1, h8" << std::endl;
+        return;
+    }
+
     auto l1 = getLocation(loc1);
     auto l2 = getLocation(loc2);
     
     Move newMove{l1.first, l1.second, l2.first, l2.second};
 
     // Input validation
-    if (board->isEmptyPosition(newMove.oldPos.first, newMove.oldPos.second)){
+    if (!board->isValidPosition(newMove.oldPos.first, newMove.oldPos.second) || !board->isValidPosition(newMove.newPos.first, newMove.newPos.second)) {
+        std::cout << "Invalid location! Locations should be from a1, a8 to h1, h8" << std::endl;
+        return;
+    } else if (board->isEmptyPosition(newMove.oldPos.first, newMove.oldPos.second)){
         std::cout<<"No piece exists there"<<std::endl;
         return;
     } else if (turn != board->getPieceAt(newMove.oldPos.first, newMove.oldPos.second).getColour()) {
@@ -170,8 +178,16 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
     try{
         Move playedMove;
         if(turn == Colour::WHITE){
+            if (dynamic_cast<HumanPlayer*>(players[0].get()) == nullptr) {
+                std::cout << "Move reserved for humans, sorry!" << std::endl;
+                return;
+            }
             playedMove = players[0]->playTurn(newMove);
         } else {
+            if (dynamic_cast<HumanPlayer*>(players[1].get()) == nullptr) {
+                std::cout << "Move reserved for humans, sorry!" << std::endl;
+                return;
+            }
             playedMove = players[1]->playTurn(newMove);
         }
         postMoveAction(playedMove);
@@ -192,9 +208,17 @@ void ChessGame::movePiece(){
     try{
         Move playedMove;
         if(turn == Colour::WHITE){
+            if (dynamic_cast<ComputerPlayer*>(players[0].get()) == nullptr) {
+                std::cout << "Move reserved for humans, sorry!" << std::endl;
+                return;
+            }
             std::cout<<"white's move\n";
             playedMove = players[0]->playTurn();
         } else {
+            if (dynamic_cast<ComputerPlayer*>(players[1].get()) == nullptr) {
+                std::cout << "Move reserved for humans, sorry!" << std::endl;
+                return;
+            }
             std::cout<<"black's move\n";
             playedMove = players[1]->playTurn();
         }
@@ -260,11 +284,34 @@ bool ChessGame::isGameRunning() const{
     return board->getGameState() != GameState::SETUP;
 }
 
+bool ChessGame::isInProgress() const{
+    return board->getGameState() == GameState::IN_PROGRESS;
+}
+
+void ChessGame::setInProgress() {
+    board->setGameInProgress();
+}
+
 void ChessGame::help(std::string loc){
+    if (!isValidLocation(loc)) {
+        std::cout << "Invalid location!" << std::endl;
+        return;
+    }
     auto processedLoc = getLocation(loc);
     if(board->isEmptyPosition(processedLoc.first, processedLoc.second)){
         std::cout<<"Specify a location that has a piece"<<std::endl;
         return;
     }
     board->displayPossibleMoves(processedLoc);
+}
+
+bool ChessGame::isValidLocation(std::string loc) const {
+    if (loc.length() != 2) {
+        return false;
+    }
+    auto processedLoc = getLocation(loc);
+    if (!board->isValidPosition(processedLoc.first, processedLoc.second)) {
+        return false;
+    }
+    return true;
 }

@@ -35,7 +35,10 @@ public:
     void displayBoard();
     void undo();
     bool isGameRunning() const;
+    bool isInProgress() const;
+    void setInProgress();
     void help(std::string);
+    bool isValidLocation(std::string loc) const;
 };
 
 #endif
