@@ -113,8 +113,8 @@ bool Board::isPositionUnderAttack(int r, int c, Colour colour) const {
     for(int i = 0; i < grid.size(); i++){
         for (int j = 0; j < grid[i].size(); j++) {
             if(grid[i][j]->isEmpty() || grid[i][j]->piece->getColour() == colour ||
-                dynamic_cast<King*>(grid[i][j]->piece)) continue;
-            auto enemyMoves = grid[i][j]->piece->getPossibleMoves();           
+                dynamic_cast<const King*>(grid[i][j]->piece)) continue;
+            auto enemyMoves = grid[i][j]->piece->getPossibleMoves(true);           
             for(auto& emove: enemyMoves){
                 if(emove.newPos.first == r && emove.newPos.second == c){
                     return true;
