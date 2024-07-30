@@ -14,23 +14,28 @@ MoveMetaData MoveSimulator::simulateMove(Move move, Board& board) {
     std::unique_ptr<Piece> newPawnPromotionPiece;
     char pawnPromotion = move.getPawnPromotion();
 
-    // Simulate move mv
-    if (pawnPromotion == ' ') {     // Normal case
-        capturedAndOriginalPawn.first = board.simulateMovePiece(move);
-        capturedAndOriginalPawn.second = nullptr;
-    } else {                        // Pawn promotion case
-        newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
-        capturedAndOriginalPawn = board.simulateMovePiece(move, newPawnPromotionPiece.get());
-    }
-    //board.render();
-    return MoveMetaData{capturedAndOriginalPawn, pawnPromotion};
+        // Simulate move mv
+        if (pawnPromotion == ' ') {     // Normal case
+            capturedAndOriginalPawn.first = board.simulateMovePiece(move);
+            capturedAndOriginalPawn.second = nullptr;
+        } else if (pawnPromotion == 'e') {  // En passant case
+            capturedAndOriginalPawn.first = nullptr;
+            capturedAndOriginalPawn.second = board.simulateMovePiece(move, 'e');
+        } else {                        // Pawn promotion case
+            newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
+            capturedAndOriginalPawn = board.simulateMovePiece(move, std::move(newPawnPromotionPiece));
+        }
+
+        return MoveMetaData{capturedAndOriginalPawn, pawnPromotion};    
 }
 
 void MoveSimulator::undoMove(Move move, Board& board, MoveMetaData metaData){
     // Undo simulated move mv
-    if (metaData.pawnPromotion == ' ') {     // Normal case
+    if (metaData.pawnPromotion == ' ') {         // Normal case
         board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.first);
-    } else {                        // Pawn promotion case
+    } else if (metaData.pawnPromotion == 'e') {  // En passant case
+        board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.second, 'e');
+    } else {                            // Pawn promotion case
         board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.first, metaData.capturedAndOriginalPawn.second);
     }
     // /board.render();

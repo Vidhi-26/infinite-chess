@@ -13,7 +13,12 @@ class Board: public Subject {
 private:
     std::vector<std::vector<std::unique_ptr<Square>>> grid;
     std::vector<std::unique_ptr<Piece>> currentPieces;
-    GameState gameState;
+    std::vector<std::unique_ptr<Piece>> simulatedPawnPromotions;
+    GameState gameState; 
+
+    // Helper methods to detect checkmate and stalemate situations
+    bool isCheckMate(Colour) const;
+    bool isStaleMate(Colour) const;
     std::pair<int,int> kingLocation(Colour colour) const;
 
 public:
@@ -29,9 +34,12 @@ public:
 
     // Move simulations
     Piece* simulateMovePiece(const Move&);
-    std::pair<Piece*, Piece*> simulateMovePiece(const Move&, Piece*);
+    std::pair<Piece*, Piece*> simulateMovePiece(const Move&, std::unique_ptr<Piece>);
+    Piece* simulateMovePiece(const Move&, char);
+
     void undoSimulatedMove(const Move&, Piece*);
     void undoSimulatedMove(const Move&, Piece*, Piece*);
+    void undoSimulatedMove(const Move&, Piece*, char);
 
     // Getters for board pieces
     std::pair<int, int> getPositionOfPiece(const Piece&) const;

@@ -14,13 +14,15 @@ Move Player::playTurn(const Move& moveRequest) {
         throw std::runtime_error("Invalid move! Please choose a different position to place piece.");
     }
 
-    //Handle pawn promotion
     char pawnPromotion = decidedMove.getPawnPromotion();
-    if (pawnPromotion != ' ') {
+    if (pawnPromotion == 'e') {             // En passante
+        board.movePiece(decidedMove);
+        board.removePiece({decidedMove.oldPos.first, decidedMove.newPos.second});
+    } else if (pawnPromotion != ' ') {      // Pawn promotion
         std::unique_ptr<Piece> piece = std::move(PieceFactory::createPiece(pawnPromotion, board));
         board.addPiece(std::move(piece), decidedMove.newPos);
         board.removePiece(decidedMove.oldPos);
-    } else {
+    } else {                                // Normal case
         board.movePiece(decidedMove);
     }
 
