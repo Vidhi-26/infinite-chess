@@ -10,7 +10,7 @@
 Level4::Level4() {}
 
 Move Level4::getStrategyImpl(Board& board, Colour colour) {
-    Move bestMove{};
+    Move bestCaptureMove{};
     int bestScore = -1;
     std::vector<Move> checkMoves;
     std::vector<Move> safeMoves;
@@ -21,6 +21,7 @@ Move Level4::getStrategyImpl(Board& board, Colour colour) {
         {3, 3}, {3, 4}, {4, 3}, {4, 4}
     };
 
+    //Iterate through the board
     for (auto it = board.cbegin(); it != board.cend(); ++it) {
         const Square& square = *it;
         if (square.isEmpty()) continue;
@@ -29,6 +30,7 @@ Move Level4::getStrategyImpl(Board& board, Colour colour) {
         if (piece->getColour() != colour) continue;
         std::vector<Move> moves = piece->getPossibleMoves();
         
+        //Iterate through all moves of the piece
         for (auto& move : moves) {
             if (board.isEmptyPosition(move.newPos.first, move.newPos.second)) {
                 board.movePiece(move);
@@ -42,7 +44,7 @@ Move Level4::getStrategyImpl(Board& board, Colour colour) {
             } else {
                 Piece& enemy = board.getPieceAt(move.newPos.first, move.newPos.second);
                 if (enemy.getColour() != colour && enemy.getPoints() > bestScore) {
-                    bestMove = move;
+                    bestCaptureMove = move;
                     bestScore = enemy.getPoints();
                 }
             }
@@ -72,12 +74,12 @@ Move Level4::getStrategyImpl(Board& board, Colour colour) {
         }
     }
 
-    // Prioritize check moves
+    // Prioritize checking the enemy king
     if (!checkMoves.empty()) {
         return StrategyUtils::getRandomMove(checkMoves);
     }
 
-    // If no check moves, prioritize safe moves
+    // If there are no check moves, prioritize safe moves (similar to level 3)
     if (!safeMoves.empty()) {
         return StrategyUtils::getRandomMove(safeMoves);
     }
@@ -88,10 +90,10 @@ Move Level4::getStrategyImpl(Board& board, Colour colour) {
     }
 
     // If no other move found, use the best capture move
-    if (bestMove.newPos.first != -1 && bestMove.newPos.second != -1) {
-        return bestMove;
+    if (bestCaptureMove.newPos.first != -1 && bestCaptureMove.newPos.second != -1) {
+        return bestCaptureMove;
     }
 
-    // If no good move found, use Level 3 strategy
-    return Level3::getStrategyImpl(board, colour);
+    // If no good move found, use Level 1 strategy
+    return Level1::getStrategyImpl(board, colour);
 }

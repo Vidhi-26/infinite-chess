@@ -13,6 +13,7 @@ private:
     std::vector<std::vector<char>> previousState;  // Store the previous state
     void renderCell(int row, int col, char state);  // Render a single cell
     void highlightCell(int row, int col);
+    void drawLabels();
 public:
     GraphicalObserver(Board*, int width = 8, int height = 8);
     void notify() override;
