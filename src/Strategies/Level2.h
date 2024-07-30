@@ -5,7 +5,7 @@ class Move;
 
 class Level2: public Level1 {
 protected:
-    Move getStrategyImpl(Board&, Colour) override;
+    virtual Move getStrategyImpl(Board&, Colour) override;
 
 public:
     Level2();
