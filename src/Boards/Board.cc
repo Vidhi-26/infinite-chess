@@ -167,7 +167,7 @@ std::pair<int,int> Board::kingLocation(Colour colour) const{
     //Iterate through the chess board
     for(size_t i = 0; i < grid.size(); i++){
         for(size_t j = 0; j < grid[i].size(); j++){
-            if(!grid[i][j]->isEmpty() && grid[i][j]->piece->getColour() == colour && dynamic_cast<King*>(grid[i][j]->piece)){
+            if(!grid[i][j]->isEmpty() && grid[i][j]->piece->getColour() == colour && dynamic_cast<const King*>(grid[i][j]->piece)){
                 
                 //Found a 2nd King
                 if(kingLoc.first != -1 && kingLoc.second != -1) {

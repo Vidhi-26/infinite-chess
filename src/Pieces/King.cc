@@ -57,12 +57,12 @@ bool King::canCastleKingSide() const {
     int r = curPos.first, c = curPos.second;
 
     if (board.isEmptyPosition(r, c + 1) && board.isEmptyPosition(r, c + 2)) {
-        if (!board.isKingInCheck(this->colour) &&
+        if (!board.isPositionUnderAttack(r, c, this->colour) &&
             !board.isPositionUnderAttack(r, c + 1, this->colour) &&
             !board.isPositionUnderAttack(r, c + 2, this->colour) && 
             !board.isEmptyPosition(r, c + 3)) {
-            auto rook = dynamic_cast<Rook*>(&board.getPieceAt(r, c + 3));
-            if (rook && !hasPieceMoved(std::make_pair(r, c + 3))) {
+            auto rook = dynamic_cast<const Rook*>(&board.getPieceAt(r, c + 3));
+            if (rook != nullptr && !hasPieceMoved(std::make_pair(r, c + 3))) {
                 return true;
             }
         }
@@ -75,13 +75,12 @@ bool King::canCastleQueenSide() const {
     int r = curPos.first, c = curPos.second;
 
     if (board.isEmptyPosition(r, c - 1) && board.isEmptyPosition(r, c - 2) && board.isEmptyPosition(r, c - 3)) {
-        if (!board.isKingInCheck(this->colour) &&
+        if (!board.isPositionUnderAttack(r, c, this->colour) &&
             !board.isPositionUnderAttack(r, c - 1, colour) &&
             !board.isPositionUnderAttack(r, c - 2, colour) &&
-            !board.isPositionUnderAttack(r, c - 3, colour) &&
             !board.isEmptyPosition(r, c - 4)) {
-            auto rook = dynamic_cast<Rook*>(&board.getPieceAt(r, c - 4));
-            if (rook && !hasPieceMoved(std::make_pair(r, c - 4))) {
+            auto rook = dynamic_cast<const Rook*>(&board.getPieceAt(r, c - 4));
+            if (rook != nullptr && !hasPieceMoved(std::make_pair(r, c - 4))) {
                 return true;
             }
         }
