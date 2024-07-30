@@ -108,6 +108,23 @@ struct pair_hash {
     }
 };
 
+// Check for enemy moves to see if they can capture the piece
+bool Board::isPositionUnderAttack(int r, int c, Colour colour) const {
+    for(int i = 0; i < grid.size(); i++){
+        for (int j = 0; j < grid[i].size(); j++) {
+            if(grid[i][j]->isEmpty() || grid[i][j]->piece->getColour() == colour ||
+                dynamic_cast<King*>(grid[i][j]->piece)) continue;
+            auto enemyMoves = grid[i][j]->piece->getPossibleMoves();           
+            for(auto& emove: enemyMoves){
+                if(emove.newPos.first == r && emove.newPos.second == c){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 bool Board::isCheckMate(Colour colour) const{
     auto kingLoc = kingLocation(colour);
     Piece& piece = getPieceAt(kingLoc.first, kingLoc.second);
@@ -214,6 +231,15 @@ void Board::updateGameState(Colour turn){
     else gameState = GameState::IN_PROGRESS;
 }
 
+// For tracking move history
+std::stack<Move> Board::getMoveHistory() const {
+    return moveHistory;
+}
+
+void Board::addToMoveHistory(Move move) {
+    moveHistory.push(move);
+}
+
 // Move simulations
 void Board::movePiece(const Move& move) {
     //std::cout<<"In move piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
@@ -250,11 +276,35 @@ Piece* Board::simulateMovePiece(const Move& move, char specialReq) {
         grid[move.oldPos.first][move.newPos.second]->piece = nullptr;   // en-passante pawn
 
         return capturedPawn;
+    } else if (specialReq == 'c') {                                     // castle case
+        grid[move.newPos.first][move.newPos.second]->piece = grid[move.oldPos.first][move.oldPos.second]->piece;
+        grid[move.oldPos.first][move.oldPos.second]->piece = nullptr;
+
+        if (move.newPos.second > move.oldPos.second) {
+            grid[move.newPos.first][move.newPos.second - 1]->piece = grid[move.newPos.first][move.newPos.second + 1]->piece;
+            grid[move.newPos.first][move.newPos.second + 1]->piece = nullptr;
+        } else {
+            grid[move.newPos.first][move.newPos.second + 1]->piece = grid[move.newPos.first][move.newPos.second - 2]->piece;
+            grid[move.newPos.first][move.newPos.second - 2]->piece = nullptr;
+        }
     }
     return nullptr;
 }
 
 // Undo move simulations
+void Board::undoSimulatedMove(const Move& move) {
+    grid[move.oldPos.first][move.oldPos.second]->piece = grid[move.newPos.first][move.newPos.second]->piece;
+    grid[move.newPos.first][move.newPos.second]->piece = nullptr;
+
+    if (move.newPos.second > move.oldPos.second) {
+        grid[move.newPos.first][move.newPos.second + 1]->piece = grid[move.newPos.first][move.newPos.second - 1]->piece;
+        grid[move.newPos.first][move.newPos.second - 1]->piece = nullptr;
+    } else {
+        grid[move.newPos.first][move.newPos.second - 2]->piece = grid[move.newPos.first][move.newPos.second + 1]->piece;
+        grid[move.newPos.first][move.newPos.second + 1]->piece = nullptr;
+    }
+}
+
 void Board::undoSimulatedMove(const Move& move, Piece* capturedPiece) {
     //std::cout<<"In simulate undo piece "<<grid[move.oldPos.first][move.oldPos.second]->piece->getCode()<<std::endl;
     grid[move.oldPos.first][move.oldPos.second]->piece = grid[move.newPos.first][move.newPos.second]->piece;

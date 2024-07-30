@@ -10,6 +10,10 @@ private:
 public:
     King(Colour, Board&, int points = INT_MAX);
     virtual ~King() = default;
+
+    std::pair<int, int> getInitialPosition() const;
+    bool canCastleKingSide() const;
+    bool canCastleQueenSide() const;
 };
 
 #endif

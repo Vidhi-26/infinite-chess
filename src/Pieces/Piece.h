@@ -22,6 +22,7 @@ public:
     char getCode() const;
     std::vector<Move> getPossibleMoves(bool isTestingKingInCheck = false);
     int getPoints() const;
+    bool hasPieceMoved(std::pair<int, int>) const;
 };
 
 #endif

@@ -21,6 +21,10 @@ MoveMetaData MoveSimulator::simulateMove(Move move, Board& board) {
         } else if (pawnPromotion == 'e') {  // En passant case
             capturedAndOriginalPawn.first = nullptr;
             capturedAndOriginalPawn.second = board.simulateMovePiece(move, 'e');
+        } else if (pawnPromotion == 'c') {  // Castle case
+            capturedAndOriginalPawn.first = nullptr;
+            capturedAndOriginalPawn.second = nullptr;
+            board.simulateMovePiece(move, 'c');
         } else {                        // Pawn promotion case
             newPawnPromotionPiece = std::move(PieceFactory::createPiece(pawnPromotion, board));
             capturedAndOriginalPawn = board.simulateMovePiece(move, std::move(newPawnPromotionPiece));
@@ -35,7 +39,9 @@ void MoveSimulator::undoMove(Move move, Board& board, MoveMetaData metaData){
         board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.first);
     } else if (metaData.pawnPromotion == 'e') {  // En passant case
         board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.second, 'e');
-    } else {                            // Pawn promotion case
+    } else if (metaData.pawnPromotion == 'c') {  // Castle case
+        board.undoSimulatedMove(move);
+    } else {                                     // Pawn promotion case
         board.undoSimulatedMove(move, metaData.capturedAndOriginalPawn.first, metaData.capturedAndOriginalPawn.second);
     }
 }

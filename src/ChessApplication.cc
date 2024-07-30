@@ -68,8 +68,8 @@ int main(){
                     chessGame.displayBoard();
                 }
                 else if(setupCmd == "-"){
-                    std::string piece, loc;
-                    std::cin>>piece>>loc;
+                    std::string loc;
+                    std::cin>>loc;
                     if (!chessGame.removePiece(loc)) {
                         std::cout << "Remove failed. No piece exists here!" << std::endl;
                     }

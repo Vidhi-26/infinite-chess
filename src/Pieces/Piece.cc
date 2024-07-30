@@ -41,3 +41,15 @@ int Piece::getPoints() const {
 char Piece::getCode() const{
     return getCodeImpl();
 }
+
+bool Piece::hasPieceMoved(std::pair<int, int> pos) const {
+    std::stack<Move> history{board.getMoveHistory()};
+    while (!history.empty()) {
+        Move move = history.top();
+        history.pop();
+        if (move.oldPos == pos) {
+            return true; // Piece has moved
+        }
+    }
+    return false;
+}

@@ -15,7 +15,9 @@ Move Player::playTurn(const Move& moveRequest) {
     }
 
     char pawnPromotion = decidedMove.getPawnPromotion();
-    if (pawnPromotion == 'e') {             // En passante
+    if (pawnPromotion == 'c') {
+        board.simulateMovePiece(decidedMove, 'c');
+    } else if (pawnPromotion == 'e') {       // En passante
         board.movePiece(decidedMove);
         board.removePiece({decidedMove.oldPos.first, decidedMove.newPos.second});
     } else if (pawnPromotion != ' ') {      // Pawn promotion

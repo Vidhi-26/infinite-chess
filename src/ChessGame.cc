@@ -69,6 +69,7 @@ std::pair<int,int> getLocation(std::string loc){
 void ChessGame::postMoveAction(Move playedMove){
     turn = (turn == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
     board->lastMove = playedMove;
+    board->addToMoveHistory(playedMove);
     board->updateGameState(turn);
     GameState curState = board->getGameState();
     if(curState == GameState::BLACK_WINS || curState == GameState::WHITE_WINS || curState == GameState::DRAW){
@@ -148,6 +149,14 @@ void ChessGame::movePiece(std::string loc1, std::string loc2, char pawnPromotion
     if (dynamic_cast<const Pawn*>(&piece) != nullptr && board->isEmptyPosition(nr, nc) &&
         nr == r + direction && (nc == c + 1 || nc == c - 1)) {
         newMove.addPawnPromotion('e');
+    }
+
+    // Handle castling
+    if (dynamic_cast<const King*>(&piece) != nullptr) {
+        const King* king = dynamic_cast<const King*>(&piece);
+        if (newMove.oldPos == king->getInitialPosition() && nr == r && (nc == c + 2 || nc == c - 2)) {
+            newMove.addPawnPromotion('c');
+        }
     }
 
     try{

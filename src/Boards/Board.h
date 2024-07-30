@@ -8,13 +8,15 @@
 #include "../GameState.h"
 #include "../Subject.h"
 #include "../Moves/Move.h"
+#include <stack>
 
 class Board: public Subject {
 private:
     std::vector<std::vector<std::unique_ptr<Square>>> grid;
     std::vector<std::unique_ptr<Piece>> currentPieces;
     std::vector<std::unique_ptr<Piece>> simulatedPawnPromotions;
-    GameState gameState; 
+    GameState gameState;
+    std::stack<Move> moveHistory; 
 
     // Helper methods to detect checkmate and stalemate situations
     bool isCheckMate(Colour) const;
@@ -35,6 +37,7 @@ public:
     std::pair<Piece*, Piece*> simulateMovePiece(const Move&, std::unique_ptr<Piece>);
     Piece* simulateMovePiece(const Move&, char);
 
+    void undoSimulatedMove(const Move&);
     void undoSimulatedMove(const Move&, Piece*);
     void undoSimulatedMove(const Move&, Piece*, Piece*);
     void undoSimulatedMove(const Move&, Piece*, char);
@@ -43,9 +46,12 @@ public:
     std::pair<int, int> getPositionOfPiece(const Piece&) const;
     Piece& getPieceAt(int, int) const;
 
-    // Setter and getter for game state
+    // Setter and getter for game state and move history
     GameState getGameState() const;
     void updateGameState(Colour);
+
+    std::stack<Move> getMoveHistory() const;
+    void addToMoveHistory(Move);
 
     // Checks if a square is at a valid position and configuration of all pieces is valid
     bool isValidPosition(int, int) const;
@@ -58,6 +64,7 @@ public:
     char getState(int, int) const;
     
     // Methods to check when game might be over
+    bool isPositionUnderAttack(int r, int c, Colour) const;
     bool isKingInCheck(Colour) const;
     
     // Iterates grid
