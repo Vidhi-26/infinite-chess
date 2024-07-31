@@ -5,6 +5,7 @@
 #include <string>
 #include <unistd.h>
 #include "Window.h"
+#include <memory>
 
 using namespace std;
 
@@ -26,15 +27,6 @@ Xwindow::Xwindow(int width, int height) {
     XFlush(d);
     XFlush(d);
 
-    // Load a larger font
-    XFontStruct *font;
-    font = XLoadQueryFont(d, "-*-helvetica-bold-r-normal--34-*-*-*-*-*-*-*");
-    if (!font) {
-        cerr << "Unable to load preferred font" << endl;
-        font = XLoadQueryFont(d, "fixed");
-    }
-    XSetFont(d, gc, font->fid);
-
     // Set up colours.
     XColor xcolour;
     Colormap cmap;
@@ -48,7 +40,6 @@ Xwindow::Xwindow(int width, int height) {
     }
 
     XSetForeground(d, gc, colours[Black]);
-
     // Make window non-resizeable.
     XSizeHints hints;
     hints.flags = (USPosition | PSize | PMinSize | PMaxSize);
@@ -66,11 +57,20 @@ Xwindow::Xwindow(int width, int height) {
         XNextEvent(d, &ev);
         if (ev.type == Expose) break;
     }
+
+    font = XLoadQueryFont(d, "-*-helvetica-bold-r-normal--24-*-*-*-p-*-iso8859-1");
+    if (!font) {
+        cerr << "Unable to load font" << endl;
+        exit(1);
+    }
+    XSetFont(d, gc, font->fid);
 }
 
 Xwindow::~Xwindow() {
+    XFreeFont(d, font);
     XFreeGC(d, gc);
     XCloseDisplay(d);
+    
 }
 
 void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
