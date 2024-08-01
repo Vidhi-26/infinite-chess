@@ -55,7 +55,7 @@ bool Board::isValidConfig() {
     }
 
     for(size_t i = 0; i < grid[grid.size() - 1].size(); i++){
-        if(!grid[0][i]->isEmpty() && dynamic_cast<Pawn*>(grid[grid.size() - 1][i]->piece)) return false;
+        if(!grid[grid.size() - 1][i]->isEmpty() && dynamic_cast<Pawn*>(grid[grid.size() - 1][i]->piece)) return false;
     }
     return true;
 }
